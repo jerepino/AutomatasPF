@@ -30,17 +30,17 @@ K_wr = 1800.0; %[kN/m]
 b_wr = 30.0; %[kN/(m/s)]
 %% Hanging Load (carga suspendida)
 %Gancho vacío 
-m_h =15000.0; %[kg] masa gancho
+M_h =15000.0; %[kg] masa gancho
 % Contenedor
-m_cn = 50000; %[kg] masa contenedor nominal
-m_cmin = 2000; %[kg] masa contenedor vacio
+M_cn = 50000; %[kg] masa contenedor nominal
+M_cmin = 2000; %[kg] masa contenedor vacio
 % y_c = 2.5; %[m] altura 2.5m bajo gancho
 %Gancho vacio
-m_l0 = m_h;
+M_l0 = M_h;
 %Gancho con carga nominal
-m_ln = m_h + m_cn; %[kg] m l =65000 kg (15000 kg + 50000 kg)
+M_ln = M_h + M_cn; %[kg] m l =65000 kg (15000 kg + 50000 kg)
 %Gancho con carga minima
-m_lmin = m_h + m_cmin; %[kg] m l =17000 kg (15000 kg + 2000 kg)
+M_lmin = M_h + M_cmin; %[kg] m l =17000 kg (15000 kg + 2000 kg)
 %Intermedia (contenedor cargado con carga menor que nominal)
 %% Gravity 
 g = 9.80665; %[m/s^2]
