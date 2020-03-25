@@ -56,6 +56,6 @@ ysb = 15;
 xt_0 = 10;%Puede ir de -30 a 50 mts; Velocidad max +/- 4[m/s]; Acceleraci�n max +/- 1[m/s2]
 yl_0 = 10;%Puede ir de -20 a 40 mts; Velocidad max +/- 1.5[m/s] carga nominal;  Velocidad max +/- 3[m/s] sin carga; 
 %Acceleracion max +/- 1[m/s2] cargado o sin carga
-xl_0 = 0;
+xl_0 = 10;
 lh_0 = 10;
 yc0 =-10;
