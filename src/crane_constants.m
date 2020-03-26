@@ -66,7 +66,7 @@ syms s;
 %% Sintonia Serie PID Carro
 wn_c = abs(p(2));
 n_c = 2.5;
-wpos_c = wn_c*5;
+wpos_c = wn_c*4;
 wv_c = n_c * wpos_c;
 wi_c = wpos_c / n_c;
 ba_c = Jeq_c * wv_c
