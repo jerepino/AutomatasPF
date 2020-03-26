@@ -1,8 +1,8 @@
-%lo estoy modificando
+
 clc;
 clear;
 close all;
-
+%lo hice yo
 %% Traslacion de Carro
 Rw = 0.5;%Radio Primitivo Rueda [m]
 i_c = 15;%Relacion de Transmision "Caja Reductora"
