@@ -17,13 +17,13 @@ Jm_i = 30;%Momento de Inercia de Motor y Freno eje rapido [kg.m2]
 beq_i = 18;%Friccion Mecanica [N.m/(rad/s)]; definir bw y bm
 
 %% Cable
-Bw = 30;%Amortiguamiento propio Cable [kN/(m/s)]
-Kw = 1800;%Rigidez a traccion Cable [kN/m]
+Bw = 30e3;%Amortiguamiento propio Cable [kN/(m/s)]
+Kw = 1800e3;%Rigidez a traccion Cable [kN/m]
 
 %% Carga Apoyada
-Kcy = 1.3e8;%Rigidez Vertical
-bcy = 500;%Friccion Vertical
-bcx = 1000;%Friccion Horizontal
+Kcy = 1.3e11;%Rigidez Vertical
+bcy = 500e3;%Friccion Vertical
+bcx = 1000e3;%Friccion Horizontal
 
 %% Masas
 Mc = 50000;%Masa de Carro
@@ -31,7 +31,6 @@ Mh = 15000;%Masa de la Carga
 %Gancho Vacio ml=15000
 %Nominal 65.000
 %Minima 17.000
-Mt = Mc+Mh;%Masa Total
 %Gancho vacio 
 M_h =15000.0; %[kg] masa gancho
 % Contenedor
@@ -50,20 +49,20 @@ M_lmin = M_h + M_cmin; %[kg] m l =17000 kg (15000 kg + 2000 kg)
 g = 9.80665;%[m/s2]
 
 %% Equivalentes
-Jeq_c = (Mt*(Rw^2)/(i_c^2))+(Jw/(i_c^2))+Jm_c;
+Jeq_c = (Mc*(Rw^2)/(i_c^2))+(Jw/(i_c^2))+Jm_c;
 beq_c = beq_c;
-Jeq_i = (-Mh*Rd^2/(i_i^2))+(Jd/(i_i^2))+Jm_i;
+Jeq_i = (-Mh*(Rd^2)/(i_i^2))+(Jd/(i_i^2))+Jm_i;
 beq_i = beq_i;
 
 %% Condiciones Iniciales
 y0 = 45;
 ysb = 15;
 xt_0 = 10;%Puede ir de -30 a 50 mts; Velocidad max +/- 4[m/s]; Acceleraci�n max +/- 1[m/s2]
-yl_0 = 10;%Puede ir de -20 a 40 mts; Velocidad max +/- 1.5[m/s] carga nominal;  Velocidad max +/- 3[m/s] sin carga; 
+yl_0 = 40;%Puede ir de -20 a 40 mts; Velocidad max +/- 1.5[m/s] carga nominal;  Velocidad max +/- 3[m/s] sin carga; 
 %Acceleracion max +/- 1[m/s2] cargado o sin carga
 xl_0 = 10;
-lh_0 = 10;
-yc0 =-10;
+lh_0 = sqrt((xl_0 - xt_0)^2 + (y0 - yl_0)^2);
+yc0 =11;
 
 %% Modulador de torque
 Tau = 0.001; %[s]
