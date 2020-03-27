@@ -50,9 +50,9 @@ M_lmin = M_h + M_cmin; %[kg] m l =17000 kg (15000 kg + 2000 kg)
 g = 9.80665;%[m/s2]
 
 %% Equivalentes
-Jeq_c = (Mc*(Rw^2)/(i_c^2))+(Jw/(i_c^2))+Jm_c;
+Jeq_c = (Mt*(Rw^2)/(i_c^2))+(Jw/(i_c^2))+Jm_c;
 beq_c = beq_c;
-Jeq_i = (-M_ln*Rd^2/(i_i^2))+(Jd/i_i^2)+Jm_i;
+Jeq_i = (-Mh*Rd^2/(i_i^2))+(Jd/(i_i^2))+Jm_i;
 beq_i = beq_i;
 
 %% Condiciones Iniciales
@@ -98,7 +98,7 @@ syms s;
 %% Sintonia Serie PID Izaje
 wn_i = abs(pi(2));
 n_i = 2.5;
-wpos_i = wn_i*4;
+wpos_i = wn_i *4;
 wv_i = n_i * wpos_i;
 wi_i = wpos_i / n_i;
 ba_i = Jeq_i * wv_i;
