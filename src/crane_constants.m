@@ -27,6 +27,7 @@ bcx = 1000;%Friccion Horizontal
 %% Masas
 Mc = 50000;%Masa de Carro
 <<<<<<< HEAD
+<<<<<<< HEAD
 Mh = 15000;%Masa de la Carga
 %Gancho Vacio ml=15000
 %Nominal 65.000
@@ -34,6 +35,8 @@ Mh = 15000;%Masa de la Carga
 Mt = Mc+Mh;%Masa Total
 
 =======
+=======
+>>>>>>> 2c4a9c5833fa29018bafdeb510d31844b3cec14b
 %Gancho vacío 
 M_h =15000.0; %[kg] masa gancho
 % Contenedor
@@ -47,6 +50,9 @@ M_ln = M_h + M_cn; %[kg] m l =65000 kg (15000 kg + 50000 kg)
 %Gancho con carga minima
 M_lmin = M_h + M_cmin; %[kg] m l =17000 kg (15000 kg + 2000 kg)
 %Intermedia (contenedor cargado con carga menor que nominal)
+<<<<<<< HEAD
+>>>>>>> 2c4a9c5833fa29018bafdeb510d31844b3cec14b
+=======
 >>>>>>> 2c4a9c5833fa29018bafdeb510d31844b3cec14b
 %% Gravedad
 g = 9.80665;%[m/s2]
