@@ -57,22 +57,12 @@ beq_i = beq_i;
 %% Condiciones Iniciales
 y0 = 45;
 ysb = 15;
-<<<<<<< HEAD
-xt_0 = 10;%Puede ir de -30 a 50 mts; Velocidad max +/- 4[m/s]; Acceleraci�n max +/- 1[m/s2]
-yl_0 = 10;%Puede ir de -20 a 40 mts; Velocidad max +/- 1.5[m/s] carga nominal;  Velocidad max +/- 3[m/s] sin carga; 
-%Acceleracion max +/- 1[m/s2] cargado o sin carga
-xl_0 = 0;
-lh_0 = sqrt((xl_0 - xt_0)^2 + (y0 - yl_0)^2);
-yc0 =0;
-=======
 xt_0 = 1;%Puede ir de -30 a 50 mts; Velocidad max +/- 4[m/s]; Acceleraci�n max +/- 1[m/s2]
 yl_0 = 30;%Puede ir de -20 a 40 mts; Velocidad max +/- 1.5[m/s] carga nominal;  Velocidad max +/- 3[m/s] sin carga; 
 %Acceleracion max +/- 1[m/s2] cargado o sin carga
 xl_0 = 1;
 yc0 =0;
 lh_0 = sqrt((xl_0 - xt_0)^2 + (y0 - yl_0)^2);
-
->>>>>>> 50461650b0d0689b2c8b07fb23ee50e33a95e7fa
 
 %% Modulador de torque
 Tau = 0.001; %[s]
