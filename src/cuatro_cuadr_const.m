@@ -1,11 +1,53 @@
 %% Constants 
 clear;
-La=1.3e-3;
-Ra=3.2;
-Le=2e-3;
-Re=3.2;
-Ke=5.9;
-Kf=1e-2;
-Kt=5.65;
-Jeq=0.049;
-beq=0.141;
+La=40.5e-3;
+Ra=10.7;
+Le=44;
+Re=220;
+Ke=1.795;
+% Kf=1e-2;
+Kt=1.795;
+Jeq=0.026;
+beq=0.01;
+
+%% Polos sistema Izaje
+A = [0 1;0 -beq/Jeq];
+pi = eig(A);
+syms s;
+(s-pi(1))*(s-pi(2))
+%% Sintonia Serie PID Izaje
+wn = abs(pi(2));
+n = 3.5;
+wpos = 21;
+wv = n * wpos;
+wi = wpos / n;
+ba = Jeq * wv;
+ksa = ba * wpos;
+kisa = ksa * wi;
+Tau=1e-3;
+P=2.2e3;
+
+
+% IaMax=1.8;
+% 
+% Fnom =  14.1/(Kt*IaMax) 
+% 
+% Kf = Fnom/9.375 
+% wnom= (30-Ra*IaMax)/(Fnom*Ke)
+% Tmax = IaMax*Fnom*Kt
+% P=wnom*Tmax
+% Pmax=30*1.8
+
+%
+% Rated power  PN=2.2 [kW]
+% Rated speed nN=1840/4900[rpm]
+% Armature voltage UAN=420[V] 
+% Field voltage UEN=220[V] 
+% Rated motor torque Tm=12.47[Nm] 
+% Armature resistance RA=10.7 [?] 
+% Field resistance RE=220[?]
+% Armature inductance LA=40.5[mH]
+% Field inductance LE=44[H] Inertia                                       
+% J=0.026[kgm2] 
+% Motor constant k=1.795 
+%Damping coefficient Fv=0.01 
