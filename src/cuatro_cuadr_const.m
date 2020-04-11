@@ -10,15 +10,17 @@ Kt=1.795;
 Jeq=0.026;
 beq=0.01;
 
-%% Polos sistema Izaje
-A = [0 1;0 -beq/Jeq];
-pi = eig(A);
+%% Polos sistema
+A = [0 1 0;
+    0 -beq/Jeq Kt/Jeq;
+    0 -Ke/La -Ra/La];
+p_i = eig(A);
 syms s;
-(s-pi(1))*(s-pi(2))
+(s-p_i(1))*(s-p_i(2))*(s-p_i(3))
 %% Sintonia Serie PID Izaje
-wn = abs(pi(2));
-n = 3.5;
-wpos = 21;
+wn = sqrt(abs(p_i(2)*p_i(3)));
+n = 2.5;
+wpos = 10;
 wv = n * wpos;
 wi = wpos / n;
 ba = Jeq * wv;
@@ -27,6 +29,8 @@ kisa = ksa * wi;
 Tau=1e-3;
 P=2.2e3;
 
+wmax= 5000*2*pi/60
+Tmax=P/wmax
 
 % IaMax=1.8;
 % 
