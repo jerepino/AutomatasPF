@@ -61,7 +61,7 @@ xt_0 = 1;%Puede ir de -30 a 50 mts; Velocidad max +/- 4[m/s]; Acceleraci�n max
 yl_0 = 30;%Puede ir de -20 a 40 mts; Velocidad max +/- 1.5[m/s] carga nominal;  Velocidad max +/- 3[m/s] sin carga; 
 %Acceleracion max +/- 1[m/s2] cargado o sin carga
 xl_0 = 1;
-yc0 =0;
+yc0 =0; %perfil de obstaculos
 lh_0 = sqrt((xl_0 - xt_0)^2 + (y0 - yl_0)^2);
 
 %% Modulador de torque
@@ -73,8 +73,8 @@ Tmax_c = Fmax_c * Rw / i_c;
 %% Polos sistema Carro
 Ac = [0 1;0 -beq_c/Jeq_c];
 p = eig(Ac);
-syms s;
-(s-p(1))*(s-p(2));
+% syms s;
+% (s-p(1))*(s-p(2)); % Para ver el polinomio
 %% Sintonia Serie PID Carro
 wn_c = abs(p(2));
 n_c = 2.5;
@@ -87,16 +87,16 @@ kisa_c = ksa_c * wi_c;
 
 %% Torque maximo izaje
 amax_i = 1; %[m/s^2]
-Fmax_i = M_ln * amax_i; 
+Fmax_i = M_ln * (amax_i + g); 
 Tmax_i = Fmax_i * Rd / i_i;
 %% Polos sistema Izaje
 Ai = [0 1;0 -beq_i/Jeq_i];
 pi = eig(Ai);
-syms s;
-(s-pi(1))*(s-pi(2));
+% syms s;
+% (s-pi(1))*(s-pi(2)); % Para ver el polinomio
 %% Sintonia Serie PID Izaje
 wn_i = abs(pi(2));
-n_i = 2.5;
+n_i = 3;
 wpos_i = wn_i *2;
 wv_i = n_i * wpos_i;
 wi_i = wpos_i / n_i;
