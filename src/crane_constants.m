@@ -55,21 +55,22 @@ Jeq_i = (-M_lmin*(Rd^2)/(i_i^2))+(Jd/(i_i^2))+Jm_i; %Cuando M es muy grande se h
 beq_i = beq_i;
 
 %% Condiciones Iniciales
-y0 = 45;
+y0 = 45; % Distancia del piso al carro yt0. Es constante
 ysb = 15;
 xt_0 = 1;%Puede ir de -30 a 50 mts; Velocidad max +/- 4[m/s]; Acceleraci�n max +/- 1[m/s2]
 yl_0 = 30;%Puede ir de -20 a 40 mts; Velocidad max +/- 1.5[m/s] carga nominal;  Velocidad max +/- 3[m/s] sin carga; 
 %Acceleracion max +/- 1[m/s2] cargado o sin carga
 xl_0 = 1;
 yc0 =0; %perfil de obstaculos
-lh_0 = sqrt((xl_0 - xt_0)^2 + (y0 - yl_0)^2);
+lh_0 = sqrt((xl_0 - xt_0)^2 + (y0 - yl_0)^2)-0.35;
 
 %% Modulador de torque
 Tau = 0.001; %[s]
 %% Torque maximo carro
+vmax_c = 4; %[m/s]
 amax_c = 1; %[m/s^2]
 Fmax_c = Mc * amax_c; 
-Tmax_c = Fmax_c * Rw / i_c;
+Tmax_c = Jeq_c * amax_c * i_c / Rw + beq_c * vmax_c * i_c / Rw + Fmax_c * Rw / i_c; % verificar ultimo termino
 %% Polos sistema Carro
 Ac = [0 1;0 -beq_c/Jeq_c];
 p = eig(Ac);
@@ -87,8 +88,10 @@ kisa_c = ksa_c * wi_c;
 
 %% Torque maximo izaje
 amax_i = 1; %[m/s^2]
-Fmax_i = M_ln * (amax_i + g); 
-Tmax_i = Fmax_i * Rd / i_i;
+vmax_i = 1.5; %[m/s]
+Tmax_st = g * M_ln * Rd / i_i;
+Tmax_i = Jeq_i * amax_i * i_i / Rd + beq_i * vmax_i * i_i / Rd + Tmax_st ;
+Tmax_i = Tmax_i * 10;% + porque se supone que tiene que mantener ese peso (peor caso) 
 %% Polos sistema Izaje
 Ai = [0 1;0 -beq_i/Jeq_i];
 pi = eig(Ai);
@@ -96,7 +99,7 @@ pi = eig(Ai);
 % (s-pi(1))*(s-pi(2)); % Para ver el polinomio
 %% Sintonia Serie PID Izaje
 wn_i = abs(pi(2));
-n_i = 3;
+n_i = 2.5;
 wpos_i = wn_i *2;
 wv_i = n_i * wpos_i;
 wi_i = wpos_i / n_i;
