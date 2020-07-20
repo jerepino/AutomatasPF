@@ -1,4 +1,4 @@
-function craneVI(block)
+function craneVI(block, x0, y0)
 %MSFUNTMPL_BASIC A Template for a Level-2 MATLAB S-Function
 %   The MATLAB S-function is written as a MATLAB function with the
 %   same name as the S-function. Replace 'msfuntmpl_basic' with the
@@ -16,7 +16,7 @@ function craneVI(block)
 %% S-function such as ports, parameters, etc. Do not add any other
 %% calls to the main body of the function.
 %%
-setup(block);
+setup(block, x0, y0);
 
 %endfunction
 
@@ -31,7 +31,7 @@ setup(block);
 %%   Required         : Yes
 %%   C-Mex counterpart: mdlInitializeSizes
 %%
-function setup(block)
+function setup(block, x0, y0)
 
 % Register number of ports
 block.NumInputPorts  = 6;
@@ -107,7 +107,7 @@ block.SimStateCompliance = 'DefaultSimState';
 
 block.RegBlockMethod('PostPropagationSetup',    @DoPostPropSetup);
 % block.RegBlockMethod('InitializeConditions', @InitializeConditions);
-block.RegBlockMethod('Start', @Start);
+block.RegBlockMethod('Start', @Start, x0, y0);
 block.RegBlockMethod('Outputs', @Outputs);     % Required
 block.RegBlockMethod('Update', @Update);
 % block.RegBlockMethod('Derivatives', @Derivatives);
@@ -184,7 +184,7 @@ function DoPostPropSetup(block)
 %%   Required         : No
 %%   C-MEX counterpart: mdlStart
 %%
-function Start(block)
+function Start(block, x0, y0)
 % Populate the Dwork vector
     block.Dwork(1).Data = 0; %xt0
     block.Dwork(2).Data = 0; %xl0
@@ -192,7 +192,7 @@ function Start(block)
     block.Dwork(4).Data = 0; %lh0
     block.Dwork(5).Data = 0; %l0
     block.Dwork(6).Data = 0; %theta0
-localFigInit();
+localFigInit(x0, y0);
 %end Start
 
 %%
@@ -262,7 +262,7 @@ function Terminate(block)
 % figure window is created.
 %=============================================================================
 %
-function localFigInit()
+function localFigInit(x0, y0)
 
 %
 % The name of the reference is derived from the name of the
@@ -272,10 +272,9 @@ function localFigInit()
 %
 
 %Data
-XCart     = 0; %xt0
+XCart     = x0; %xt0
 Theta     = 0;
-yl0        = 35; %yl0
-
+yl0        = y0; %yl0
 
 
 XDelta    = 2;
