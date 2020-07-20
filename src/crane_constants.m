@@ -105,10 +105,10 @@ kisa_i = ksa_i * wi_i;
 %% Condiciones Iniciales
 y0 = 45; % Distancia del piso al carro yt0. Es constante
 ysb = 15;
-xt_0 = 1;%Puede ir de -30 a 50 mts; Velocidad max +/- 4[m/s]; Acceleraci�n max +/- 1[m/s2]
-yl_0 = 30;%Puede ir de -20 a 40 mts; Velocidad max +/- 1.5[m/s] carga nominal;  Velocidad max +/- 3[m/s] sin carga; 
+xt_0 = 0;%Puede ir de -30 a 50 mts; Velocidad max +/- 4[m/s]; Acceleraci�n max +/- 1[m/s2]
+yl_0 = 35;%Puede ir de -20 a 40 mts; Velocidad max +/- 1.5[m/s] carga nominal;  Velocidad max +/- 3[m/s] sin carga; 
 %Acceleracion max +/- 1[m/s2] cargado o sin carga
-xl_0 = 1;
+xl_0 = -3;
 yc0 =0; %perfil de obstaculos
 lh_0 = sqrt((xl_0 - xt_0)^2 + (y0 - yl_0)^2)-0.35;
 
