@@ -34,7 +34,7 @@ setup(block);
 function setup(block)
 
 % Register number of ports
-block.NumInputPorts  = 3;
+block.NumInputPorts  = 6;
 block.NumOutputPorts = 0;
 
 % Setup port properties to be inherited or dynamic
@@ -56,6 +56,21 @@ block.InputPort(2).DirectFeedthrough = true;
 block.InputPort(3).DatatypeID  = 0;  % double
 block.InputPort(3).Complexity  = 'Real';
 block.InputPort(3).DirectFeedthrough = true;
+
+% block.InputPort(4).Dimensions        = 1;
+block.InputPort(4).DatatypeID  = 0;  % double
+block.InputPort(4).Complexity  = 'Real';
+block.InputPort(4).DirectFeedthrough = true;
+
+% block.InputPort(5).Dimensions        = 1;
+block.InputPort(5).DatatypeID  = 0;  % double
+block.InputPort(5).Complexity  = 'Real';
+block.InputPort(5).DirectFeedthrough = true;
+
+% block.InputPort(6).Dimensions        = 1;
+block.InputPort(6).DatatypeID  = 0;  % double
+block.InputPort(6).Complexity  = 'Real';
+block.InputPort(6).DirectFeedthrough = true;
 
 % % Override output port properties
 % block.OutputPort(1).Dimensions       = 1;
@@ -90,7 +105,7 @@ block.SimStateCompliance = 'DefaultSimState';
 %% provided for each function for more information.
 %% -----------------------------------------------------------------
 
-% block.RegBlockMethod('PostPropagationSetup',    @DoPostPropSetup);
+block.RegBlockMethod('PostPropagationSetup',    @DoPostPropSetup);
 % block.RegBlockMethod('InitializeConditions', @InitializeConditions);
 block.RegBlockMethod('Start', @Start);
 block.RegBlockMethod('Outputs', @Outputs);     % Required
@@ -107,14 +122,44 @@ block.RegBlockMethod('Terminate', @Terminate); % Required
 %%   Required         : No
 %%   C-Mex counterpart: mdlSetWorkWidths
 %%
-% function DoPostPropSetup(block)
-%   block.NumDworks = 3;
-%
-%   block.Dwork(1).Name            = 'x1';
-%   block.Dwork(1).Dimensions      = 1;
-%   block.Dwork(1).DatatypeID      = 0;      % double
-%   block.Dwork(1).Complexity      = 'Real'; % real
-%   block.Dwork(1).UsedAsDiscState = true;
+function DoPostPropSetup(block)
+  block.NumDworks = 6;
+
+  block.Dwork(1).Name            = 'xt';
+  block.Dwork(1).Dimensions      = 1;
+  block.Dwork(1).DatatypeID      = 0;      % double
+  block.Dwork(1).Complexity      = 'Real'; % real
+  block.Dwork(1).UsedAsDiscState = true;
+  
+  block.Dwork(2).Name            = 'xl';
+  block.Dwork(2).Dimensions      = 1;
+  block.Dwork(2).DatatypeID      = 0;      % double
+  block.Dwork(2).Complexity      = 'Real'; % real
+  block.Dwork(2).UsedAsDiscState = true;
+  
+  block.Dwork(3).Name            = 'yl';
+  block.Dwork(3).Dimensions      = 1;
+  block.Dwork(3).DatatypeID      = 0;      % double
+  block.Dwork(3).Complexity      = 'Real'; % real
+  block.Dwork(3).UsedAsDiscState = true;
+  
+  block.Dwork(4).Name            = 'lh';
+  block.Dwork(4).Dimensions      = 1;
+  block.Dwork(4).DatatypeID      = 0;      % double
+  block.Dwork(4).Complexity      = 'Real'; % real
+  block.Dwork(4).UsedAsDiscState = true;
+  
+  block.Dwork(5).Name            = 'l';
+  block.Dwork(5).Dimensions      = 1;
+  block.Dwork(5).DatatypeID      = 0;      % double
+  block.Dwork(5).Complexity      = 'Real'; % real
+  block.Dwork(5).UsedAsDiscState = true;
+  
+  block.Dwork(6).Name            = 'theta';
+  block.Dwork(6).Dimensions      = 1;
+  block.Dwork(6).DatatypeID      = 0;      % double
+  block.Dwork(6).Complexity      = 'Real'; % real
+  block.Dwork(6).UsedAsDiscState = true;
 %end DoPostPropSetup
 
 %%
@@ -141,9 +186,12 @@ block.RegBlockMethod('Terminate', @Terminate); % Required
 %%
 function Start(block)
 % Populate the Dwork vector
-%     block.Dwork(1).Data = 0;
-%     block.Dwork(2).Data = 0;
-%     block.Dwork(3).Data = 0;
+    block.Dwork(1).Data = 0; %xt0
+    block.Dwork(2).Data = 0; %xl0
+    block.Dwork(3).Data = 0; %yl0
+    block.Dwork(4).Data = 0; %lh0
+    block.Dwork(5).Data = 0; %l0
+    block.Dwork(6).Data = 0; %theta0
 localFigInit();
 %end Start
 
@@ -169,7 +217,12 @@ function Outputs(block)
 %%
 function Update(block)
 
-% block.Dwork(1).Data = block.InputPort(1).Data;
+block.Dwork(1).Data = block.InputPort(1).Data;
+block.Dwork(2).Data = block.InputPort(2).Data;
+block.Dwork(3).Data = block.InputPort(3).Data;
+block.Dwork(4).Data = block.InputPort(4).Data;
+block.Dwork(5).Data = block.InputPort(5).Data;
+block.Dwork(6).Data = block.InputPort(6).Data;
 
 fig = get_param(gcbh,'UserData');
 if ishghandle(fig, 'figure')
@@ -219,13 +272,16 @@ function localFigInit()
 %
 
 %Data
-XCart     = 0;
+XCart     = 0; %xt0
 Theta     = 0;
+yl0        = 35; %yl0
+
+
 
 XDelta    = 2;
 PDelta    = 0.2;
-XPendTop  = XCart + 10*sin(Theta); % Will be zero
-YPendTop  = 35+10*cos(Theta);         % Will be 10
+XPendTop  = XCart; % Will be zero
+YPendTop  = 45;         % Will be 10
 PDcosT    = PDelta*cos(Theta);     % Will be 0.2
 PDsinT    = -PDelta*sin(Theta);    % Will be zero
 % Containers
@@ -253,7 +309,7 @@ if ishghandle(Fig ,'figure')
         'XData',ones(2,1)*[XCart-XDelta XCart+XDelta]);
     set(FigUD.Pend,...
         'XData',[XPendTop-PDcosT XPendTop+PDcosT; XCart-PDcosT XCart+PDcosT],...
-        'YData',[YPendTop-PDsinT YPendTop+PDsinT; 35-PDsinT PDsinT+35]);
+        'YData',[YPendTop-PDsinT YPendTop+PDsinT; yl0-PDsinT PDsinT+yl0]);
     set(FigUD.Dock,...
         'XData',ones(2,1)*[-30 0],...
         'YData',[0 0; -20 -20]);
@@ -279,7 +335,7 @@ if ishghandle(Fig ,'figure')
     end    
     set(FigUD.Spre,...
     'XData',    ones(2,1)*[XCart-w/2 XCart+w/2],...
-    'YData',    [35 35; 34 34]); %Atencion con Y hay que modificar
+    'YData',    [yl0 yl0; yl0-1 yl0-1]); %Atencion con Y hay que modificar
     %
     % bring it to the front
     %
@@ -318,8 +374,8 @@ Cart = surface(...
     'CData',    11*ones(2));
 Pend = surface(...
     'Parent',   AxesH,...
-    'XData',    [XPendTop-PDcosT XPendTop+PDcosT; XCart-PDcosT XCart+PDcosT],...
-    'YData',    [YPendTop-PDsinT YPendTop+PDsinT; -PDsinT PDsinT],...
+    'XData',    [XPendTop-PDsinT XPendTop+PDsinT; XCart-PDsinT XCart+PDsinT],...
+    'YData',    [YPendTop-PDcosT YPendTop+PDcosT; -PDcosT PDcosT],...
     'ZData',    zeros(2),...
     'CData',    11*ones(2));
 Dock = surface(...
@@ -408,21 +464,21 @@ set_param(gcbh,'UserData',Fig);
 function localFigSets(ud,block)
 
 XDelta   = 2;
-PDelta   = 0.2;
+PDelta   = 0.1;
 w = 5; %container width
-XPendTop = block.InputPort(2).Data + 10*sin(block.InputPort(3).Data);
-YPendTop = 35+10*cos(block.InputPort(3).Data);
-PDcosT   = PDelta*cos(block.InputPort(3).Data);
-PDsinT   = -PDelta*sin(block.InputPort(3).Data);
+XPendTop = block.Dwork(1).Data;
+YPendTop = 45; %ymax
+PDcosT   = PDelta*cos(block.Dwork(6).Data);
+PDsinT   = -PDelta*sin(block.Dwork(6).Data);
 set(ud.Cart,...
-    'XData',ones(2,1)*[block.InputPort(2).Data-XDelta block.InputPort(2).Data+XDelta]);
+    'XData',ones(2,1)*[block.Dwork(1).Data-XDelta block.Dwork(1).Data+XDelta]);
 set(ud.Pend,...
-    'XData',[XPendTop-PDcosT XPendTop+PDcosT; block.InputPort(2).Data-PDcosT block.InputPort(2).Data+PDcosT], ...
-    'YData',[YPendTop-PDsinT YPendTop+PDsinT; 35-PDsinT PDsinT+35]);
+    'XData',[XPendTop-PDsinT XPendTop+PDsinT; block.Dwork(2).Data-PDsinT block.Dwork(2).Data+PDsinT], ...
+    'YData',[YPendTop-PDcosT YPendTop+PDcosT; block.Dwork(3).Data-PDcosT block.Dwork(3).Data+PDcosT]);
 %Spreader = Gancho
 set(ud.Spre,...
-    'XData',    ones(2,1)*[block.InputPort(2).Data-w/2 block.InputPort(2).Data+w/2],...
-    'YData',    [35 35; 34 34]);
+    'XData',    ones(2,1)*[block.Dwork(2).Data-w/2 block.Dwork(2).Data+w/2],...
+    'YData',    [block.Dwork(3).Data block.Dwork(3).Data; block.Dwork(3).Data-1 block.Dwork(3).Data-1]);
 % Force plot to be drawn
 pause(0)
 drawnow
