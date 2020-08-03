@@ -108,7 +108,17 @@ ysb = 15;
 xt_0 = 0;%Puede ir de -30 a 50 mts; Velocidad max +/- 4[m/s]; Acceleraci�n max +/- 1[m/s2]
 yl_0 = 35;%Puede ir de -20 a 40 mts; Velocidad max +/- 1.5[m/s] carga nominal;  Velocidad max +/- 3[m/s] sin carga; 
 %Acceleracion max +/- 1[m/s2] cargado o sin carga
-xl_0 = -3;
+xl_0 = 0;
 yc0 =0; %perfil de obstaculos
 lh_0 = sqrt((xl_0 - xt_0)^2 + (y0 - yl_0)^2)-0.35;
 
+%% Sintonia Serie PID Angulo de carga
+
+wn_a = abs(sqrt(g/lh_0)); 
+n_a = 2.5;
+wpos_a = wn_a *3;
+wv_a = n_a * wpos_a;
+wi_a = wpos_a / n_a;
+ba_a =  lh_0 * wv_a;
+ksa_a = ba_a * wpos_a;
+kisa_a = ksa_a * wi_a;
