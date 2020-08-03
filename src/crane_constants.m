@@ -116,7 +116,7 @@ lh_0 = sqrt((xl_0 - xt_0)^2 + (y0 - yl_0)^2)-0.35;
 
 wn_a = abs(sqrt(g/lh_0)); 
 n_a = 2.5;
-wpos_a = wn_a *3;
+wpos_a = wn_a * 30;
 wv_a = n_a * wpos_a;
 wi_a = wpos_a / n_a;
 ba_a =  lh_0 * wv_a;
