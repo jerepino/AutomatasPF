@@ -106,7 +106,7 @@ kisa_i = ksa_i * wi_i;
 y0 = 45; % Distancia del piso al carro yt0. Es constante
 ysb = 15;
 xt_0 = 0;%Puede ir de -30 a 50 mts; Velocidad max +/- 4[m/s]; Acceleraci�n max +/- 1[m/s2]
-yl_0 = 35;%Puede ir de -20 a 40 mts; Velocidad max +/- 1.5[m/s] carga nominal;  Velocidad max +/- 3[m/s] sin carga; 
+yl_0 = 20;%Puede ir de -20 a 40 mts; Velocidad max +/- 1.5[m/s] carga nominal;  Velocidad max +/- 3[m/s] sin carga; 
 %Acceleracion max +/- 1[m/s2] cargado o sin carga
 xl_0 = -3;
 yc0 =0; %perfil de obstaculos
