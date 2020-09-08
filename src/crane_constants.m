@@ -78,6 +78,13 @@ wi_c = wpos_c / n_c;
 ba_c = Jeq_c * wv_c;
 ksa_c = ba_c * wpos_c;
 kisa_c = ksa_c * wi_c;
+% Bode diagram
+Gc = tf([ba_c, ksa_c, kisa_c],[1, ba_c/Jeq_c, ksa_c/Jeq_c, kisa_c/Jeq_c]);
+%Gcl = tf([1, 0],[1, ba_c/Jeq_c, ksa_c/Jeq_c, kisa_c/Jeq_c]);
+% bode(Gc,{wi_c, wv_c});
+H = bodeplot(Gc)%,{wpos_c/n_c, wpos_c*n_c});
+setoptions(H,'FreqScale','linear')
+grid on;
 
 %% Torque maximo izaje
 amax_i = 1; %[m/s^2]
@@ -113,7 +120,6 @@ yc0 =0; %perfil de obstaculos
 lh_0 = sqrt((xl_0 - xt_0)^2 + (y0 - yl_0)^2)-0.35;
 
 %% Sintonia Serie PID Angulo de carga
-
 wn_a = abs(sqrt(g/lh_0)); 
 n_a = 2.5;
 wpos_a = wn_a * 30;
