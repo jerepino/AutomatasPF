@@ -80,33 +80,33 @@ p = eig(Ac);
 
 % Sintonia Serie PID Carro
 wn_c = abs(p(2));
-n_c = 4.0;
-wpos_c = wn_c * 2;
+n_c = 2.8;
+wpos_c = wn_c * 12;
 wv_c = n_c * wpos_c;
 wi_c = wpos_c / n_c;
 ba_c = Jeq_c * wv_c;
 ksa_c = ba_c * wpos_c;
 kisa_c = ksa_c * wi_c;
 
-% Bode diagram
-Gc = tf([ba_c, ksa_c, kisa_c],[1, ba_c/Jeq_c, ksa_c/Jeq_c, kisa_c/Jeq_c]);
-%Gcl = tf([1, 0],[1, ba_c/Jeq_c, ksa_c/Jeq_c, kisa_c/Jeq_c]);
-figure(1)
-% bode(Gc,{wi_c, wv_c});
-H = bodeplot(Gc);%,{wpos_c/n_c, wpos_c*n_c});
-title('Bode Carro');
-setoptions(H,'FreqScale','linear')
-grid on;
-
-% Poles 
-pGc = pole(Gc);
-figure(2)
-pzplot(Gc);
-title('Polos Carro');
-hold on;
-grid on;
-pzplot(tf(1,[1, 3375/7376, 0]),'r');
-legend('controler','motor');
+% % Bode diagram
+% Gc = tf([ba_c, ksa_c, kisa_c],[1, ba_c/Jeq_c, ksa_c/Jeq_c, kisa_c/Jeq_c]);
+% %Gcl = tf([1, 0],[1, ba_c/Jeq_c, ksa_c/Jeq_c, kisa_c/Jeq_c]);
+% figure(1)
+% % bode(Gc,{wi_c, wv_c});
+% H = bodeplot(Gc);%,{wpos_c/n_c, wpos_c*n_c});
+% title('Bode Carro');
+% setoptions(H,'FreqScale','linear')
+% grid on;
+% 
+% % Poles 
+% pGc = pole(Gc);
+% figure(2)
+% pzplot(Gc);
+% title('Polos Carro');
+% hold on;
+% grid on;
+% pzplot(tf(1,[1, 3375/7376, 0]),'r');
+% legend('controler','motor');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                  IZAJE                                       %
@@ -123,40 +123,40 @@ Tmax_i = Jeq_i * amax_i * i_i / Rd + beq_i * vmax_i * i_i / Rd \...
 
 % Polos sistema Izaje
 Ai = [0 1;0 -beq_i/Jeq_i];
-pi = eig(Ai);
-syms s;
-pis = simplify(det(s * eye(2) - Ai));
-%(s-pi(1))*(s-pi(2)); % Para ver el polinomio
+p_i = eig(Ai);
+% syms s;
+% p_is = simplify(det(s * eye(2) - Ai));
+%(s-p_i(1))*(s-p_i(2)); % Para ver el polinomio
 
 % Sintonia Serie PID Izaje
-wn_i = abs(pi(2));
-n_i = 2.5;
-wpos_i = wn_i *3;
+wn_i = abs(p_i(2));
+n_i = 3.3;
+wpos_i = wn_i * 4.5;
 wv_i = n_i * wpos_i;
 wi_i = wpos_i / n_i;
 ba_i = Jeq_i * wv_i;
 ksa_i = ba_i * wpos_i;
 kisa_i = ksa_i * wi_i;
 
-% Bode diagram
-Gi = tf([ba_i, ksa_i, kisa_i],[1, ba_i/Jeq_i, ksa_i/Jeq_i, kisa_i/Jeq_i]);
-%Gil = tf([1, 0],[1, ba_i/Jeq_i, ksa_i/Jeq_i, kisa_i/Jeq_i]);
-figure(3)
-% bode(Gi,{wi_i, wv_i});
-H = bodeplot(Gi);%,{wpos_i/n_i, wpos_i*n_i});
-title('Bode Izaje');
-setoptions(H,'FreqScale','linear')
-grid on;
-
-% Poles 
-pGi = pole(Gi);
-figure(4)
-pzplot(Gi);
-title('Polos Izaje');
-hold on;
-grid on;
-pzplot(tf(1,[1, 32400/34891, 0]),'r');
-legend('controler','motor');
+% % Bode diagram
+% Gi = tf([ba_i, ksa_i, kisa_i],[1, ba_i/Jeq_i, ksa_i/Jeq_i, kisa_i/Jeq_i]);
+% %Gil = tf([1, 0],[1, ba_i/Jeq_i, ksa_i/Jeq_i, kisa_i/Jeq_i]);
+% figure(3)
+% % bode(Gi,{wi_i, wv_i});
+% H = bodeplot(Gi);%,{wpos_i/n_i, wpos_i*n_i});
+% title('Bode Izaje');
+% setoptions(H,'FreqScale','linear')
+% grid on;
+% 
+% % Poles 
+% pGi = pole(Gi);
+% figure(4)
+% pzplot(Gi);
+% title('Polos Izaje');
+% hold on;
+% grid on;
+% pzplot(tf(1,[1, 32400/34891, 0]),'r');
+% legend('controler','motor');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                          CONDICIONES INICIALES                               %
@@ -172,17 +172,46 @@ yl_0 = 35;  % Puede ir de -20 a 40 mts
 %Acceleracion max +/- 1[m/s2] cargado o sin carga
 xl_0 = 0;
 yc0 =0; %perfil de obstaculos
-lh_0 = sqrt((xl_0 - xt_0)^2 + (y0 - yl_0)^2)-0.35;
+lh_0 = sqrt((xl_0 - xt_0)^2 + (y0 - yl_0)^2) - 0.35;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                               BALANCEO                                       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Polos Sistema Balanceo carga
+Aa = [0 -g/lh_0; 1 0];
+Ba = [-1/lh_0; 0];
+% Wc_a = ctrb(Aa, Ba);
+% rank(Wc_a);
+p_a = eig(Aa); 
+% syms s;
+% pas = simplify(det(s * eye(2) - Aa));
+
 % Sintonia Serie PID Angulo de carga
 wn_a = abs(sqrt(g/lh_0)); 
-n_a = 3;
-wpos_a = wn_a * 10;
+n_a = 2.4;
+wpos_a = wn_a * 0.9;         % En el paper dice que wpos < wn_a 
 wv_a = n_a * wpos_a;
 wi_a = wpos_a / n_a;
 ba_a =  lh_0 * wv_a;
 ksa_a = ba_a * wpos_a;
 kisa_a = ksa_a * wi_a;
+
+% % Bode diagram
+% Ga = tf([ba_a, ksa_a, kisa_a],[1, ba_a/lh_0, ksa_a/lh_0, kisa_a/lh_0]);
+% %Gal = tf([1, 0],[1, ba_a/lh_0, ksa_a/lh_0, kisa_a/lh_0]);
+% figure(5)
+% % bode(Ga,{wi_a, wv_a});
+% H = bodeplot(Ga);%,{wpos_a/n_a, wpos_a*n_a});
+% title('Bode Agulo');
+% setoptions(H,'FreqScale','linear')
+% grid on;
+% 
+% % Poles 
+% pGa = pole(Ga);
+% figure(6)
+% pzplot(Ga);
+% title('Polos Angulo');
+% hold on;
+% grid on;
+% pzplot(tf([-1/lh_0, 0, 0],[1, 0, 1.0162]),'r');
+% legend('controler','angle');
