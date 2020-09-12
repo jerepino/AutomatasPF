@@ -16,7 +16,7 @@ function craneVI(block, x0, y0)
 %% S-function such as ports, parameters, etc. Do not add any other
 %% calls to the main body of the function.
 %%
-setup(block, x0, y0);
+setup(block);
 
 %endfunction
 
@@ -31,7 +31,7 @@ setup(block, x0, y0);
 %%   Required         : Yes
 %%   C-Mex counterpart: mdlInitializeSizes
 %%
-function setup(block, x0, y0)
+function setup(block)
 
 % Register number of ports
 block.NumInputPorts  = 6;
@@ -78,7 +78,8 @@ block.InputPort(6).DirectFeedthrough = true;
 % block.OutputPort(1).Complexity  = 'Real';
 
 % Register parameters
-block.NumDialogPrms     = 0;
+block.NumDialogPrms     = 2;
+
 
 % Register sample times
 %  [0 offset]            : Continuous sample time
@@ -107,7 +108,7 @@ block.SimStateCompliance = 'DefaultSimState';
 
 block.RegBlockMethod('PostPropagationSetup',    @DoPostPropSetup);
 % block.RegBlockMethod('InitializeConditions', @InitializeConditions);
-block.RegBlockMethod('Start', @Start, x0, y0);
+block.RegBlockMethod('Start', @Start);
 block.RegBlockMethod('Outputs', @Outputs);     % Required
 block.RegBlockMethod('Update', @Update);
 % block.RegBlockMethod('Derivatives', @Derivatives);
@@ -184,7 +185,7 @@ function DoPostPropSetup(block)
 %%   Required         : No
 %%   C-MEX counterpart: mdlStart
 %%
-function Start(block, x0, y0)
+function Start(block)
 % Populate the Dwork vector
     block.Dwork(1).Data = 0; %xt0
     block.Dwork(2).Data = 0; %xl0
@@ -192,6 +193,11 @@ function Start(block, x0, y0)
     block.Dwork(4).Data = 0; %lh0
     block.Dwork(5).Data = 0; %l0
     block.Dwork(6).Data = 0; %theta0
+    
+    %Acces to param data
+    x0 = block.DialogPrm(1).Data;
+    y0 = block.DialogPrm(2).Data;
+    
 localFigInit(x0, y0);
 %end Start
 
@@ -483,4 +489,3 @@ pause(0)
 drawnow
 
 % end LocalPendSets
-
