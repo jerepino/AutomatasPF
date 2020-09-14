@@ -68,7 +68,7 @@ Tau = 0.001; %[s]
 vmax_c = 4; %[m/s]
 amax_c = 1; %[m/s^2]
 Fmax_c = Mc * amax_c; 
-Tmax_c = Jeq_c * amax_c * i_c / Rw + beq_c * vmax_c * i_c / Rw \...
+Tmax_c = Jeq_c * amax_c * i_c / Rw + beq_c * vmax_c * i_c / Rw ...
     + Fmax_c * Rw / i_c; % verificar ultimo termino
 
 % Polos sistema Carro
@@ -118,7 +118,7 @@ Tmax_st = g * M_ln * Rd / i_i;
 Fw_max = Kw * 0.4 + Bw * 2; % Planteo un estiramiento y velocidad maximo 
                             % en base a los resultados de una ejecucion 
                             % con torque suficiente para mantener la carga
-Tmax_i = Jeq_i * amax_i * i_i / Rd + beq_i * vmax_i * i_i / Rd \...
+Tmax_i = Jeq_i * amax_i * i_i / Rd + beq_i * vmax_i * i_i / Rd ...
     + Tmax_st + Fw_max * Rd / i_i; % agrego Fw!!
 
 % Polos sistema Izaje
