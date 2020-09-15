@@ -163,10 +163,10 @@ kisa_i = ksa_i * wi_i;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 y0 = 45; % Distancia del piso al carro yt0. Es constante
 ysb = 15;
-xt_0 = 0;   % Puede ir de -30 a 50 mts
+xt_0 = 0; sXMax=50; sXMin=-30;  % Puede ir de -30 a 50 mts
             % Velocidad max +/- 4[m/s]
             % Acceleracion max +/- 1[m/s2]
-yl_0 = 35;  % Puede ir de -20 a 40 mts
+yl_0 = 35; sYMax=40; sYMin=-20; % Puede ir de -20 a 40 mts
             % Velocidad max +/- 1.5[m/s] carga nominal
             % Velocidad max +/- 3[m/s] sin carga 
 %Acceleracion max +/- 1[m/s2] cargado o sin carga
