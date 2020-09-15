@@ -53,7 +53,7 @@ g = 9.80665; % [m/s2]
 % Equivalentes
 Jeq_c = Mc * Rw^2 / i_c^2 + Jw / i_c^2 + Jm_c;
 beq_c = beq_c;
-Jeq_i = (-M_lmin*(Rd^2)/(i_i^2))+(Jd/(i_i^2))+Jm_i; % Cuando M es muy grande
+Jeq_i = (-M_h*(Rd^2)/(i_i^2))+(Jd/(i_i^2))+Jm_i;    % Cuando M es muy grande
                                                     % se hace negativo y caga
                                                     % todo
 beq_i = beq_i;
