@@ -198,7 +198,7 @@ function Start(block)
     x0 = block.DialogPrm(1).Data;
     y0 = block.DialogPrm(2).Data;
     
-localFigInit(x0, y0);
+    localFigInit(x0, y0);
 %end Start
 
 %%
