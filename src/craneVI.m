@@ -35,7 +35,7 @@ function setup(block)
 
 % Register number of ports
 block.NumInputPorts  = 6;
-block.NumOutputPorts = 0;
+block.NumOutputPorts = 1;
 
 % Setup port properties to be inherited or dynamic
 block.SetPreCompInpPortInfoToDynamic;
@@ -46,33 +46,43 @@ block.SetPreCompOutPortInfoToDynamic;
 block.InputPort(1).DatatypeID  = 0;  % double
 block.InputPort(1).Complexity  = 'Real';
 block.InputPort(1).DirectFeedthrough = true;
-
+block.InputPort(1).SamplingMode      = 'Sample';
+block.InputPort(1).DimensionsMode    = 'Fixed';
+  
 % block.InputPort(2).Dimensions        = 1;
 block.InputPort(2).DatatypeID  = 0;  % double
 block.InputPort(2).Complexity  = 'Real';
 block.InputPort(2).DirectFeedthrough = true;
+block.InputPort(2).SamplingMode      = 'Sample';
+block.InputPort(2).DimensionsMode    = 'Fixed';
 
 % block.InputPort(3).Dimensions        = 1;
 block.InputPort(3).DatatypeID  = 0;  % double
 block.InputPort(3).Complexity  = 'Real';
 block.InputPort(3).DirectFeedthrough = true;
-
+block.InputPort(3).SamplingMode      = 'Sample';
+block.InputPort(3).DimensionsMode    = 'Fixed';
 % block.InputPort(4).Dimensions        = 1;
 block.InputPort(4).DatatypeID  = 0;  % double
 block.InputPort(4).Complexity  = 'Real';
 block.InputPort(4).DirectFeedthrough = true;
-
+block.InputPort(4).SamplingMode      = 'Sample';
+block.InputPort(4).DimensionsMode    = 'Fixed';
 % block.InputPort(5).Dimensions        = 1;
 block.InputPort(5).DatatypeID  = 0;  % double
 block.InputPort(5).Complexity  = 'Real';
 block.InputPort(5).DirectFeedthrough = true;
-
+block.InputPort(5).SamplingMode      = 'Sample';
+block.InputPort(5).DimensionsMode    = 'Fixed';
 % block.InputPort(6).Dimensions        = 1;
 block.InputPort(6).DatatypeID  = 0;  % double
 block.InputPort(6).Complexity  = 'Real';
 block.InputPort(6).DirectFeedthrough = true;
-
+block.InputPort(6).SamplingMode      = 'Sample';
+block.InputPort(6).DimensionsMode    = 'Fixed';
 % % Override output port properties
+block.OutputPort(1).DimensionsMode = 'Fixed';
+block.OutputPort(1).SamplingMode   = 'Sample';
 % block.OutputPort(1).Dimensions       = 1;
 % block.OutputPort(1).DatatypeID  = 0; % double
 % block.OutputPort(1).Complexity  = 'Real';
@@ -88,7 +98,7 @@ block.NumDialogPrms     = 2;
 %  [-1, 0]               : Inherited sample time
 %  [-2, 0]               : Variable sample time
 block.SampleTimes = [-1 0];
-
+% block.SampleTimes = [0.01 0];
 % Specify the block simStateCompliance. The allowed values are:
 %    'UnknownSimState', < The default setting; warn and assume DefaultSimState
 %    'DefaultSimState', < Same sim state as a built-in block
@@ -113,8 +123,26 @@ block.RegBlockMethod('Outputs', @Outputs);     % Required
 block.RegBlockMethod('Update', @Update);
 % block.RegBlockMethod('Derivatives', @Derivatives);
 block.RegBlockMethod('Terminate', @Terminate); % Required
+block.RegBlockMethod('SetInputPortDimensions',      @SetInputPortDims);
 
 %end setup
+
+
+% -------------------------------------------------------------------------
+function SetInputDimsMode(block, port, dm)
+% Set dimension mode
+block.InputPort(port).DimensionsMode = dm;
+
+
+function SetInputPortDims(block, idx, di)
+width = prod(di);
+if width ~= 1  
+     DAStudio.error('Simulink:blocks:multirateInvaliDimension'); 
+end
+% Set compiled dimensions 
+block.InputPort(idx).Dimensions = di;
+block.OutputPort(1).Dimensions =[1 9];
+
 
 %%
 %% PostPropagationSetup:
@@ -124,43 +152,54 @@ block.RegBlockMethod('Terminate', @Terminate); % Required
 %%   C-Mex counterpart: mdlSetWorkWidths
 %%
 function DoPostPropSetup(block)
-  block.NumDworks = 6;
+  % Set the type of signal size to be dependent on input values, i.e.,
+  % dimensions have to be updated at output
+  block.SignalSizesComputeType = 'FromInputValueAndSize';
+  
+  block.NumDworks = 7;
 
   block.Dwork(1).Name            = 'xt';
   block.Dwork(1).Dimensions      = 1;
   block.Dwork(1).DatatypeID      = 0;      % double
   block.Dwork(1).Complexity      = 'Real'; % real
-  block.Dwork(1).UsedAsDiscState = true;
+%   block.Dwork(1).UsedAsDiscState = true;
+  
   
   block.Dwork(2).Name            = 'xl';
   block.Dwork(2).Dimensions      = 1;
   block.Dwork(2).DatatypeID      = 0;      % double
   block.Dwork(2).Complexity      = 'Real'; % real
-  block.Dwork(2).UsedAsDiscState = true;
+%   block.Dwork(2).UsedAsDiscState = true;
   
   block.Dwork(3).Name            = 'yl';
   block.Dwork(3).Dimensions      = 1;
   block.Dwork(3).DatatypeID      = 0;      % double
   block.Dwork(3).Complexity      = 'Real'; % real
-  block.Dwork(3).UsedAsDiscState = true;
+%   block.Dwork(3).UsedAsDiscState = true;
   
   block.Dwork(4).Name            = 'lh';
   block.Dwork(4).Dimensions      = 1;
   block.Dwork(4).DatatypeID      = 0;      % double
   block.Dwork(4).Complexity      = 'Real'; % real
-  block.Dwork(4).UsedAsDiscState = true;
+%   block.Dwork(4).UsedAsDiscState = true;
   
   block.Dwork(5).Name            = 'l';
   block.Dwork(5).Dimensions      = 1;
   block.Dwork(5).DatatypeID      = 0;      % double
   block.Dwork(5).Complexity      = 'Real'; % real
-  block.Dwork(5).UsedAsDiscState = true;
+%   block.Dwork(5).UsedAsDiscState = true;
   
   block.Dwork(6).Name            = 'theta';
   block.Dwork(6).Dimensions      = 1;
   block.Dwork(6).DatatypeID      = 0;      % double
   block.Dwork(6).Complexity      = 'Real'; % real
-  block.Dwork(6).UsedAsDiscState = true;
+%   block.Dwork(6).UsedAsDiscState = true;
+  
+  block.Dwork(7).Name            = 'yc0';
+  block.Dwork(7).Dimensions      = 9;
+  block.Dwork(7).DatatypeID      = 0;      % double
+  block.Dwork(7).Complexity      = 'Real'; % real
+%   block.Dwork(7).UsedAsDiscState = true;
 %end DoPostPropSetup
 
 %%
@@ -193,12 +232,12 @@ function Start(block)
     block.Dwork(4).Data = 0; %lh0
     block.Dwork(5).Data = 0; %l0
     block.Dwork(6).Data = 0; %theta0
-    
+    block.Dwork(7).Data = [0 0 0 0 0 0 0 0 0]; %yc0
     %Acces to param data
     x0 = block.DialogPrm(1).Data;
     y0 = block.DialogPrm(2).Data;
     
-    localFigInit(x0, y0);
+    localFigInit(x0, y0, block);
 %end Start
 
 %%
@@ -209,7 +248,11 @@ function Start(block)
 %%   C-MEX counterpart: mdlOutputs
 %%
 function Outputs(block)
-
+% Output function:
+% -update output values
+% -update signal dimensions
+% block.OutputPort(1).CurrentDimensions = [1 9];
+block.OutputPort(1).Data = block.Dwork(7).Data';
 % block.OutputPort(1).Data = block.Dwork(1).Data + block.InputPort(1).Data;
 
 %end Outputs
@@ -268,7 +311,7 @@ function Terminate(block)
 % figure window is created.
 %=============================================================================
 %
-function localFigInit(x0, y0)
+function localFigInit(x0, y0, block)
 
 %
 % The name of the reference is derived from the name of the
@@ -292,13 +335,16 @@ PDsinT    = -PDelta*sin(Theta);    % Will be zero
 % Containers
 h = 2.5; %height
 w = 5;   %width
-nMaxContX = 9; %cantidad maxima de filas de containers
+nMaxContX = 9; %cantidad maxima de columnas de containers
 nMaxContY = 10; %cantidad maxima de containers apilados
 nCont = [2 3 4 4 5 5 6 7 7]; %numero de containers apilados por fila
 nColor = ['r' 'g' 'm' 'y' 'c']; 
 dX = 3;
 dY = -18;
 Cont = gobjects(nMaxContX,nMaxContY);
+block.Dwork(7).Data = h * nCont + dY ; % yc0
+% disp(block.Dwork(7).Data);
+
 % Ship
 Ship_ = polyshape([ 1   1  3   3  48 48 50  50],...
                   [-20 -1 -1 -18 -18 -1 -1 -20]);
