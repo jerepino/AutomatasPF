@@ -4,6 +4,8 @@ close all;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                  DATOS                                       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Tiempo de muestreo 
+Ts = 5e-3;
 % Traslacion de Carro
 Rw = 0.5;     % Radio Primitivo Rueda [m]
 i_c = 15;     % Relacion de Transmision "Caja Reductora"
