@@ -1,4 +1,4 @@
-function craneVI(block, x0, y0)
+function craneVI(block)
 %MSFUNTMPL_BASIC A Template for a Level-2 MATLAB S-Function
 %   The MATLAB S-function is written as a MATLAB function with the
 %   same name as the S-function. Replace 'msfuntmpl_basic' with the
@@ -334,7 +334,7 @@ PDcosT    = PDelta*cos(Theta);     % Will be 0.2
 PDsinT    = -PDelta*sin(Theta);    % Will be zero
 % Containers
 h = 2.5; %height
-w = 5;   %width
+w = 4;   %width
 nMaxContX = 9; %cantidad maxima de columnas de containers
 nMaxContY = 10; %cantidad maxima de containers apilados
 nCont = [2 3 4 4 5 5 6 7 7]; %numero de containers apilados por fila
@@ -382,7 +382,7 @@ if ishghandle(Fig ,'figure')
             dY=dY+h;
         end
         dY = -18;
-        dX = dX+w;
+        dX = dX+w+1;
     end    
     set(FigUD.Spre,...
     'XData',    ones(2,1)*[XCart-w/2 XCart+w/2],...
@@ -469,7 +469,7 @@ for i = 1:nMaxContX
         dY=dY+h;
     end
     dY = -18;
-    dX = dX+w;
+    dX = dX+w+1;
 end
 %Spreader = Gancho
 Spre = surface(...
@@ -516,7 +516,7 @@ function localFigSets(ud,block)
 
 XDelta   = 2;
 PDelta   = 0.1;
-w = 5; %container width
+w = 4; %container width
 XPendTop = block.Dwork(1).Data;
 YPendTop = 45; %ymax
 PDcosT   = PDelta*cos(block.Dwork(6).Data);
