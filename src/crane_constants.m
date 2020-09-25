@@ -23,7 +23,7 @@ Bw = 30e3;    % Amortiguamiento propio Cable [kN/(m/s)]
 Kw = 1800e3;  % Rigidez a traccion Cable [kN/m]
 
 % Carga Apoyada
-Kcy = 1.3e11; % Rigidez Vertical
+Kcy = 1.3e9; % Rigidez Vertical
 bcy = 500e3;  % Friccion Vertical
 bcx = 1000e3; % Friccion Horizontal
 
@@ -53,9 +53,8 @@ g = 9.80665; % [m/s2]
 % Equivalentes
 Jeq_c = Mc * Rw^2 / i_c^2 + Jw / i_c^2 + Jm_c;
 beq_c = beq_c;
-Jeq_i = (-M_h*(Rd^2)/(i_i^2))+(Jd/(i_i^2))+Jm_i;    % Cuando M es muy grande
-                                                    % se hace negativo y caga
-                                                    % todo
+Jeq_i = (Jd/(i_i^2))+Jm_i;  % Saco Mh porque el sistema no esta acoplado por la
+                            % masa, sino por Fw
 beq_i = beq_i;
 
 % Modulador de torque
