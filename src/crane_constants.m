@@ -53,7 +53,7 @@ g = 9.80665; % [m/s2]
 % Equivalentes
 Jeq_c = Mc * Rw^2 / i_c^2 + Jw / i_c^2 + Jm_c;
 beq_c = beq_c;
-Jeq_i = (Jd/(i_i^2))+Jm_i;  % Saco Mh porque el sistema no esta acoplado por la
+Jeq_i = Jd / i_i^2 + Jm_i;  % Saco Mh porque el sistema no esta acoplado por la
                             % masa, sino por Fw
 beq_i = beq_i;
 
@@ -194,6 +194,8 @@ wi_a = wpos_a / n_a;
 ba_a =  lh_0 * wv_a;
 ksa_a = ba_a * wpos_a;
 kisa_a = ksa_a * wi_a;
+% ba_a = lh_0 * (n_a - 1) * wpos_a;
+% ksa_a = lh_0 * wpos_a^2;
 
 % % Bode diagram
 % Ga = tf([ba_a, ksa_a, kisa_a],[1, ba_a/lh_0, ksa_a/lh_0, kisa_a/lh_0]);
