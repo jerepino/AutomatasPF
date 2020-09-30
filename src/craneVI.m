@@ -10,7 +10,12 @@ function craneVI(block)
 %   documentation for C-Mex S-functions.
 %
 %   Copyright 2003-2010 The MathWorks, Inc.
-
+%   @param x0
+%   @param y0
+%   @param h
+%   @param w
+%   @param xdic
+%   @param nCont
 %%
 %% The setup method is used to set up the basic attributes of the
 %% S-function such as ports, parameters, etc. Do not add any other
@@ -34,12 +39,12 @@ setup(block);
 function setup(block)
 
 % Register number of ports
-block.NumInputPorts  = 6;
-block.NumOutputPorts = 1;
+block.NumInputPorts  = 7;
+block.NumOutputPorts = 0;
 
 % Setup port properties to be inherited or dynamic
 block.SetPreCompInpPortInfoToDynamic;
-block.SetPreCompOutPortInfoToDynamic;
+% block.SetPreCompOutPortInfoToDynamic;
 
 % Override input port properties
 % block.InputPort(1).Dimensions        = 1;
@@ -62,33 +67,44 @@ block.InputPort(3).Complexity  = 'Real';
 block.InputPort(3).DirectFeedthrough = true;
 block.InputPort(3).SamplingMode      = 'Sample';
 block.InputPort(3).DimensionsMode    = 'Fixed';
+
 % block.InputPort(4).Dimensions        = 1;
 block.InputPort(4).DatatypeID  = 0;  % double
 block.InputPort(4).Complexity  = 'Real';
 block.InputPort(4).DirectFeedthrough = true;
 block.InputPort(4).SamplingMode      = 'Sample';
 block.InputPort(4).DimensionsMode    = 'Fixed';
+
 % block.InputPort(5).Dimensions        = 1;
 block.InputPort(5).DatatypeID  = 0;  % double
 block.InputPort(5).Complexity  = 'Real';
 block.InputPort(5).DirectFeedthrough = true;
 block.InputPort(5).SamplingMode      = 'Sample';
 block.InputPort(5).DimensionsMode    = 'Fixed';
+
 % block.InputPort(6).Dimensions        = 1;
 block.InputPort(6).DatatypeID  = 0;  % double
 block.InputPort(6).Complexity  = 'Real';
 block.InputPort(6).DirectFeedthrough = true;
 block.InputPort(6).SamplingMode      = 'Sample';
 block.InputPort(6).DimensionsMode    = 'Fixed';
+
+% block.InputPort(7).Dimensions        = 1;
+block.InputPort(7).DatatypeID  = 8;  % boolean
+% block.InputPort(7).Complexity  = 'Real';
+block.InputPort(7).DirectFeedthrough = true;
+block.InputPort(7).SamplingMode      = 'Sample';
+block.InputPort(7).DimensionsMode    = 'Fixed';
+
 % % Override output port properties
-block.OutputPort(1).DimensionsMode = 'Fixed';
-block.OutputPort(1).SamplingMode   = 'Sample';
+% block.OutputPort(1).DimensionsMode = 'Fixed';
+% block.OutputPort(1).SamplingMode   = 'Sample';
 % block.OutputPort(1).Dimensions       = 1;
 % block.OutputPort(1).DatatypeID  = 0; % double
 % block.OutputPort(1).Complexity  = 'Real';
 
 % Register parameters
-block.NumDialogPrms     = 2;
+block.NumDialogPrms     = 6;
 
 
 % Register sample times
@@ -141,7 +157,7 @@ if width ~= 1
 end
 % Set compiled dimensions 
 block.InputPort(idx).Dimensions = di;
-block.OutputPort(1).Dimensions =[1 9];
+% block.OutputPort(1).Dimensions =[1 15];
 
 
 %%
@@ -156,7 +172,7 @@ function DoPostPropSetup(block)
   % dimensions have to be updated at output
   block.SignalSizesComputeType = 'FromInputValueAndSize';
   
-  block.NumDworks = 7;
+  block.NumDworks = 9;
 
   block.Dwork(1).Name            = 'xt';
   block.Dwork(1).Dimensions      = 1;
@@ -195,11 +211,22 @@ function DoPostPropSetup(block)
   block.Dwork(6).Complexity      = 'Real'; % real
 %   block.Dwork(6).UsedAsDiscState = true;
   
-  block.Dwork(7).Name            = 'yc0';
-  block.Dwork(7).Dimensions      = 9;
+  block.Dwork(7).Name            = 'nCont';
+  block.Dwork(7).Dimensions      = 17;
   block.Dwork(7).DatatypeID      = 0;      % double
   block.Dwork(7).Complexity      = 'Real'; % real
-%   block.Dwork(7).UsedAsDiscState = true;
+  block.Dwork(7).UsedAsDiscState = true;
+
+  block.Dwork(8).Name            = 'bFlagLoad';
+  block.Dwork(8).Dimensions      = 1;
+  block.Dwork(8).DatatypeID      = 8;      % bolean
+  block.Dwork(8).Complexity      = 'Real'; % real
+
+  block.Dwork(9).Name            = 'iCont'; %indice del container
+  block.Dwork(9).Dimensions      = 1;
+  block.Dwork(9).DatatypeID      = 0;      % double
+  block.Dwork(9).Complexity      = 'Real'; % real
+
 %end DoPostPropSetup
 
 %%
@@ -232,7 +259,9 @@ function Start(block)
     block.Dwork(4).Data = 0; %lh0
     block.Dwork(5).Data = 0; %l0
     block.Dwork(6).Data = 0; %theta0
-    block.Dwork(7).Data = [0 0 0 0 0 0 0 0 0]; %yc0
+    block.Dwork(7).Data = block.DialogPrm(6).Data; %nCont
+    block.Dwork(8).Data = false; % bFlagLoad
+    block.Dwork(9).Data = 0; % indice del container
     %Acces to param data
     x0 = block.DialogPrm(1).Data;
     y0 = block.DialogPrm(2).Data;
@@ -252,7 +281,7 @@ function Outputs(block)
 % -update output values
 % -update signal dimensions
 % block.OutputPort(1).CurrentDimensions = [1 9];
-block.OutputPort(1).Data = block.Dwork(7).Data';
+% block.OutputPort(1).Data = block.Dwork(7).Data';
 % block.OutputPort(1).Data = block.Dwork(1).Data + block.InputPort(1).Data;
 
 %end Outputs
@@ -332,17 +361,21 @@ XPendTop  = XCart; % Will be zero
 YPendTop  = 45;         % Will be 10
 PDcosT    = PDelta*cos(Theta);     % Will be 0.2
 PDsinT    = -PDelta*sin(Theta);    % Will be zero
+
 % Containers
-h = 2.5; %height
-w = 4;   %width
-nMaxContX = 9; %cantidad maxima de columnas de containers
-nMaxContY = 10; %cantidad maxima de containers apilados
-nCont = [2 3 4 4 5 5 6 7 7]; %numero de containers apilados por fila
+h = block.DialogPrm(3).Data; %height
+w = block.DialogPrm(4).Data;   %width
+
+xDisc = block.DialogPrm(5).Data; % Discretizacion de x para colocar containers
+nCont = block.DialogPrm(6).Data; % numero de containers apilados por columna
 nColor = ['r' 'g' 'm' 'y' 'c']; 
-dX = 3;
-dY = -18;
-Cont = gobjects(nMaxContX,nMaxContY);
-block.Dwork(7).Data = h * nCont + dY ; % yc0
+% dX = -25;
+dY = 0;
+Cont = gobjects(max(nCont), size(xDisc,2)); % filas son los containers,
+                                             %  columnas es la posicion 
+                                             
+% block.Dwork(7).Data = h * nCont + [zeros(1, find(xDisc == 0)-1),15 ,...
+%                         -18 * ones(1,size(xDisc,2) - find(xDisc == 0))]; % yc0
 % disp(block.Dwork(7).Data);
 
 % Ship
@@ -374,15 +407,18 @@ if ishghandle(Fig ,'figure')
         'XData',ones(2,1)*[0 1],...
         'YData',[15 15; -20 -20]);
     % Conteiners
-    for i = 1:nMaxContX
+    for i = 1:size(xDisc,2)
         for j = 1:nCont(i)
-            set(FigUD.Cont(i,j),...
-                'XData',    ones(2,1)*[dX dX+w],...
+            set(FigUD.Cont(j,i),...
+                'XData',    ones(2,1)*[xDisc(i)-w/2 xDisc(i)+w/2],...
                 'YData',    [dY+h dY+h; dY dY]);
             dY=dY+h;
+        end        
+        if xDisc(i) < 0
+            dY = 0;
+        else
+            dY = -18;
         end
-        dY = -18;
-        dX = dX+w+1;
     end    
     set(FigUD.Spre,...
     'XData',    ones(2,1)*[XCart-w/2 XCart+w/2],...
@@ -457,19 +493,22 @@ Beam = surface(...
     'ZData',    zeros(2),...
     'CData',    11*ones(2));
 % Container
-for i = 1:nMaxContX 
+for i = 1:size(xDisc,2)
     for j = 1:nCont(i)
-        Cont(i,j) = surface(...
+        Cont(j,i) = surface(...
             'Parent',   AxesH,...
             'FaceColor', nColor(randi(5)),...
-            'XData',    ones(2,1)*[dX dX+w],...
+            'XData',    ones(2,1)*[xDisc(i)-w/2 xDisc(i)+w/2],...
             'YData',    [dY+h dY+h; dY dY],...
             'ZData',    zeros(2),...
             'CData',    11*ones(2));
         dY=dY+h;
     end
-    dY = -18;
-    dX = dX+w+1;
+    if xDisc(i) < 0
+        dY = 0;
+    else
+        dY = -18;
+    end   
 end
 %Spreader = Gancho
 Spre = surface(...
@@ -513,10 +552,16 @@ set_param(gcbh,'UserData',Fig);
 %=============================================================================
 %
 function localFigSets(ud,block)
+% Containers
+h = block.DialogPrm(3).Data; %height
+w = block.DialogPrm(4).Data;   %width
+
+xDisc = block.DialogPrm(5).Data; % Discretizacion de x para colocar containers
+nCont = block.Dwork(7).Data; % numero de containers apilados por columna
 
 XDelta   = 2;
 PDelta   = 0.1;
-w = 4; %container width
+
 XPendTop = block.Dwork(1).Data;
 YPendTop = 45; %ymax
 PDcosT   = PDelta*cos(block.Dwork(6).Data);
@@ -530,6 +575,52 @@ set(ud.Pend,...
 set(ud.Spre,...
     'XData',    ones(2,1)*[block.Dwork(2).Data-w/2 block.Dwork(2).Data+w/2],...
     'YData',    [block.Dwork(3).Data block.Dwork(3).Data; block.Dwork(3).Data-1 block.Dwork(3).Data-1]);
+
+if block.InputPort(7).Data    
+    if ~block.Dwork(8).Data
+        xRounded = interp1(xDisc, xDisc, block.Dwork(2).Data, 'nearest', 'extrap');
+        ind = find(xDisc == xRounded);
+        block.Dwork(9).Data = ind(1);
+        block.Dwork(8).Data = true;
+    end
+    set(ud.Cont(nCont(block.Dwork(9).Data), block.Dwork(9).Data),...
+    'XData',    ones(2,1)*[block.Dwork(2).Data-w/2 block.Dwork(2).Data+w/2],...
+    'YData',    [block.Dwork(3).Data-1 block.Dwork(3).Data-1; ...
+                block.Dwork(3).Data-1-h block.Dwork(3).Data-1-h]);
+end
+
+if ~block.InputPort(7).Data && block.Dwork(8).Data
+    xRounded = interp1(xDisc, xDisc, block.Dwork(2).Data, 'nearest', 'extrap');
+    ind_2 = find(xDisc == xRounded);
+    if xDisc(ind_2(1)) < 0
+        dY = 0;
+    else
+        dY = -18;
+    end   
+    
+    ud.Cont(nCont(ind_2(1))+1, ind_2(1)) = surface(...
+    'Parent',   get(ud.Cont(nCont(block.Dwork(9).Data),...
+                            block.Dwork(9).Data), 'Parent'),...
+    'FaceColor',get(ud.Cont(nCont(block.Dwork(9).Data),...
+                            block.Dwork(9).Data), 'FaceColor'),...
+    'XData', ones(2,1)*[xDisc(ind_2(1))-w/2 xDisc(ind_2(1))+w/2],...
+    'YData', h * [nCont(ind_2(1))+1 nCont(ind_2(1))+1; ...
+                  nCont(ind_2(1)) nCont(ind_2(1))] + dY,...
+    'ZData', get(ud.Cont(nCont(block.Dwork(9).Data),...
+                               block.Dwork(9).Data), 'ZData'),...
+    'CData', get(ud.Cont(nCont(block.Dwork(9).Data),...
+                               block.Dwork(9).Data), 'CData'));
+%         set( ud.Cont(k,nCont(i)+1),);
+
+    % Despejo objeto de la posicion que estaba
+    delete(ud.Cont(nCont(block.Dwork(9).Data), block.Dwork(9).Data))% = gobjects(0);
+    % Lo sumo a la columna actual
+    block.Dwork(7).Data(block.Dwork(9).Data) = nCont(block.Dwork(9).Data)-1;
+    block.Dwork(7).Data(ind_2(1)) = nCont(ind_2(1))+1;
+    block.Dwork(8).Data = false;
+
+end
+
 % Force plot to be drawn
 pause(0)
 drawnow
