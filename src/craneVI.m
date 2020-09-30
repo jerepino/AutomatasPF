@@ -422,7 +422,7 @@ if ishghandle(Fig ,'figure')
     end    
     set(FigUD.Spre,...
     'XData',    ones(2,1)*[XCart-w/2 XCart+w/2],...
-    'YData',    [yl0 yl0; yl0-1 yl0-1]); %Atencion con Y hay que modificar
+    'YData',    [yl0+1 yl0+1; yl0 yl0]); %Atencion con Y hay que modificar
     %
     % bring it to the front
     %
@@ -515,7 +515,7 @@ Spre = surface(...
     'Parent',   AxesH,...
     'FaceColor', 'w',...
     'XData',    ones(2,1)*[XCart-w/2 XCart+w/2],...
-    'YData',    [35 35; 34 34],...   %Tiene que ser Y carga mas un delta
+    'YData',    [yl0+1 yl0+1; yl0 yl0],...   %Tiene que ser Y carga mas un delta 35 35; 34 34
     'ZData',    zeros(2),...
     'CData',    11*ones(2));
 
@@ -553,7 +553,7 @@ set_param(gcbh,'UserData',Fig);
 %
 function localFigSets(ud,block)
 % Containers
-h = block.DialogPrm(3).Data; %height
+h = block.DialogPrm(3).Data;   %height
 w = block.DialogPrm(4).Data;   %width
 
 xDisc = block.DialogPrm(5).Data; % Discretizacion de x para colocar containers
@@ -569,12 +569,15 @@ PDsinT   = -PDelta*sin(block.Dwork(6).Data);
 set(ud.Cart,...
     'XData',ones(2,1)*[block.Dwork(1).Data-XDelta block.Dwork(1).Data+XDelta]);
 set(ud.Pend,...
-    'XData',[XPendTop-PDsinT XPendTop+PDsinT; block.Dwork(2).Data-PDsinT block.Dwork(2).Data+PDsinT], ...
-    'YData',[YPendTop-PDcosT YPendTop+PDcosT; block.Dwork(3).Data-PDcosT block.Dwork(3).Data+PDcosT]);
+    'XData',[XPendTop-PDsinT XPendTop+PDsinT;...
+             block.Dwork(2).Data-PDsinT block.Dwork(2).Data+PDsinT], ...
+    'YData',[YPendTop-PDcosT YPendTop+PDcosT;...
+             block.Dwork(3).Data-PDcosT block.Dwork(3).Data+PDcosT]);
 %Spreader = Gancho
 set(ud.Spre,...
     'XData',    ones(2,1)*[block.Dwork(2).Data-w/2 block.Dwork(2).Data+w/2],...
-    'YData',    [block.Dwork(3).Data block.Dwork(3).Data; block.Dwork(3).Data-1 block.Dwork(3).Data-1]);
+    'YData',    [block.Dwork(3).Data+1 block.Dwork(3).Data+1;...
+                 block.Dwork(3).Data block.Dwork(3).Data]);
 
 if block.InputPort(7).Data    
     if ~block.Dwork(8).Data
@@ -585,8 +588,8 @@ if block.InputPort(7).Data
     end
     set(ud.Cont(nCont(block.Dwork(9).Data), block.Dwork(9).Data),...
     'XData',    ones(2,1)*[block.Dwork(2).Data-w/2 block.Dwork(2).Data+w/2],...
-    'YData',    [block.Dwork(3).Data-1 block.Dwork(3).Data-1; ...
-                block.Dwork(3).Data-1-h block.Dwork(3).Data-1-h]);
+    'YData',    [block.Dwork(3).Data block.Dwork(3).Data; ...
+                block.Dwork(3).Data-h block.Dwork(3).Data-h]);
 end
 
 if ~block.InputPort(7).Data && block.Dwork(8).Data
@@ -613,7 +616,8 @@ if ~block.InputPort(7).Data && block.Dwork(8).Data
 %         set( ud.Cont(k,nCont(i)+1),);
 
     % Despejo objeto de la posicion que estaba
-    delete(ud.Cont(nCont(block.Dwork(9).Data), block.Dwork(9).Data))% = gobjects(0);
+    delete(ud.Cont(nCont(block.Dwork(9).Data), block.Dwork(9).Data));
+%     ud.Cont(nCont(block.Dwork(9).Data), block.Dwork(9).Data) = surface(0,0,0);
     % Lo sumo a la columna actual
     block.Dwork(7).Data(block.Dwork(9).Data) = nCont(block.Dwork(9).Data)-1;
     block.Dwork(7).Data(ind_2(1)) = nCont(ind_2(1))+1;
