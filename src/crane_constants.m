@@ -170,9 +170,18 @@ yl_0 = 35; sYMax=40; sYMin=-20; % Puede ir de -20 a 40 mts
             % Velocidad max +/- 3[m/s] sin carga 
 %Acceleracion max +/- 1[m/s2] cargado o sin carga
 xl_0 = 0;
-yc0 =0; %perfil de obstaculos
+
 lh_0 = sqrt((xl_0 - xt_0)^2 + (y0 - yl_0)^2) - 0.35;
 
+% Discretizo el espacio en x
+
+xdisc = [-25 -20 -15 -10 -5 -1 0 1 5 10 15 20 25 30 35 40 45];
+nCont = [ 1   1   1   1   1  0 0 0 2  3  4  5  6  7  8  9 10];
+h = 2.5;
+w = 4;
+yc0 = h * nCont + [zeros(1, find(xdisc == 0)-1),15 , ...
+                   -18 * ones(1,size(xdisc,2) - find(xdisc == 0))]; %perfil obstaculos
+             
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                               BALANCEO                                       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
