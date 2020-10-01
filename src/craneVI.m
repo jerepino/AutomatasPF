@@ -373,7 +373,7 @@ nColor = ['r' 'g' 'm' 'y' 'c'];
 dY = 0;
 Cont = gobjects(max(nCont), size(xDisc,2)); % filas son los containers,
                                              %  columnas es la posicion 
-                                             
+Text = gobjects(size(xDisc,2));                                             
 % block.Dwork(7).Data = h * nCont + [zeros(1, find(xDisc == 0)-1),15 ,...
 %                         -18 * ones(1,size(xDisc,2) - find(xDisc == 0))]; % yc0
 % disp(block.Dwork(7).Data);
@@ -419,6 +419,9 @@ if ishghandle(Fig ,'figure')
         else
             dY = -18;
         end
+        if xDisc(i)<=-5 || xDisc(i) >= 5
+            set(FigUD.Text(i), 'EdgeColor', 'g');
+        end
     end    
     set(FigUD.Spre,...
     'XData',    ones(2,1)*[XCart-w/2 XCart+w/2],...
@@ -453,6 +456,9 @@ AxesH = axes(...
     'Xlim',    [-30 50],...
     'Ylim',    [-20 50],...
     'Visible', 'off');
+
+
+
 Cart = surface(...
     'Parent',   AxesH,...
     'XData',    ones(2,1)*[XCart-XDelta XCart+XDelta],...
@@ -508,7 +514,14 @@ for i = 1:size(xDisc,2)
         dY = 0;
     else
         dY = -18;
-    end   
+    end
+    if xDisc(i)<=-5 || xDisc(i) >= 5
+        Text(i) = text('Parent', AxesH,...
+                       'String', string(i),...
+                       'Position', [xDisc(i)-1 -24],...
+                       'EdgeColor', 'g',...
+                       'Margin', 1);
+    end
 end
 %Spreader = Gancho
 Spre = surface(...
@@ -532,6 +545,7 @@ FigUD.Beam         = Beam;
 FigUD.Cont         = Cont;
 FigUD.Spre         = Spre;
 FigUD.Block        = get_param(gcbh,'Handle');
+FigUD.Text         = Text;
 % set( Object, Name parameter, Value)
 set(Fig,'UserData',FigUD);
 
