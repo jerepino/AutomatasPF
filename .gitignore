@@ -31,3 +31,6 @@ codegen/
 octave-workspace
 
 *.bak
+
+# Trajectory papers
+docs/trajectory/
