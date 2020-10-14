@@ -162,14 +162,14 @@ kisa_i = ksa_i * wi_i;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 y0 = 45; % Distancia del piso al carro yt0. Es constante
 ysb = 15;
-xt_0 = 0; sXMax=50; sXMin=-30;  % Puede ir de -30 a 50 mts
+xt_0 = -10; sXMax=50; sXMin=-30;  % Puede ir de -30 a 50 mts
             % Velocidad max +/- 4[m/s]
             % Acceleracion max +/- 1[m/s2]
-yl_0 = 35; sYMax=40; sYMin=-20; % Puede ir de -20 a 40 mts
+yl_0 = 10; sYMax=40; sYMin=-20; % Puede ir de -20 a 40 mts
             % Velocidad max +/- 1.5[m/s] carga nominal
             % Velocidad max +/- 3[m/s] sin carga 
 %Acceleracion max +/- 1[m/s2] cargado o sin carga
-xl_0 = 0;
+xl_0 = -10;
 
 lh_0 = sqrt((xl_0 - xt_0)^2 + (y0 - yl_0)^2) - 0.35;
 
@@ -181,7 +181,17 @@ h = 2.5;
 w = 4;
 yc0 = h * nCont + [zeros(1, find(xdisc == 0)-1),15 , ...
                    -18 * ones(1,size(xdisc,2) - find(xdisc == 0))]; %perfil obstaculos
-             
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                               INTERFAZ                                       %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%             
+bPosObjetivoIncremental = false; % Para check box 
+dXiniCarga = 0;
+dXiniDescarga = 0;
+dYStart = 15;
+dYFinish = 15;
+dHmaxIzaje = 40;
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                               BALANCEO                                       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
