@@ -186,11 +186,11 @@ yc0 = h * nCont + [zeros(1, find(xdisc == 0)-1),15 , ...
 %                               INTERFAZ                                       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%             
 bPosObjetivoIncremental = false; % Para check box 
-dXiniCarga = 0;
-dXiniDescarga = 0;
-dYStart = 15;
+dXiniCarga = -10;
+dXiniDescarga = 15;
+dYStart = 10;
 dYFinish = 15;
-dHmaxIzaje = 40;
+dHmaxIzaje = 35;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                               BALANCEO                                       %
@@ -212,9 +212,10 @@ wv_a = n_a * wpos_a;
 wi_a = wpos_a / n_a;
 ba_a =  lh_0 * wv_a;
 ksa_a = ba_a * wpos_a;
-kisa_a = ksa_a * wi_a;
 % ba_a = lh_0 * (n_a - 1) * wpos_a;
 % ksa_a = lh_0 * wpos_a^2;
+
+kisa_a = ksa_a * wi_a;
 
 % % Bode diagram
 % Ga = tf([ba_a, ksa_a, kisa_a],[1, ba_a/lh_0, ksa_a/lh_0, kisa_a/lh_0]);
