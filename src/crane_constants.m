@@ -191,7 +191,7 @@ dXiniDescarga = 15;
 dYStart = 10;
 dYFinish = 15;
 dHmaxIzaje = 35;
-
+lh = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                               BALANCEO                                       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -205,18 +205,36 @@ p_a = eig(Aa);
 % pas = simplify(det(s * eye(2) - Aa));
 
 % Sintonia Serie PID Angulo de carga
-wn_a = abs(sqrt(g/lh_0)); 
-n_a = 2.4;
-wpos_a = wn_a * 0.9;         % En el paper dice que wpos < wn_a 
-wv_a = n_a * wpos_a;
-wi_a = wpos_a / n_a;
-ba_a =  lh_0 * wv_a;
-ksa_a = ba_a * wpos_a;
-% ba_a = lh_0 * (n_a - 1) * wpos_a;
-% ksa_a = lh_0 * wpos_a^2;
+% Ga = tf([-(Mc+M_l0) 0],[lh_0*(M_l0+Jeq_c*i_c^2/Rw^2) 0 g*Jeq_c*i_c^2/Rw^2]);
+% p_a_ = pole(Ga);
+% wn_a = abs(sqrt(g/10)); 
+% % wn_a = abs(p_a_(1));
+% % n_a = 3;
+% % leq = lh_0*(M_l0+Jeq_c*i_c^2/Rw^2);
+% wpos_a = wn_a * 0.98; 
+% % wv_a = n_a * wpos_a;
+% % wi_a = wpos_a / n_a;
+% % ba_a =  lh_0 * wv_a;
+% % ksa_a = ba_a * wpos_a;
+% % kisa_a = ksa_a * wi_a;
+% 
+% % ba_a = lh_0 * (n_a - 1) * wpos_a;
+% % ksa_a = lh_0 * wpos_a^2;
+% 
+% %Estos funcan con ode4
+% ba_a = -10 + g/wpos_a^2
+% ksa_a = 2 * 0.6 * wpos_a * (10 + ba_a);
 
-kisa_a = ksa_a * wi_a;
 
+% For para varias ba_a y ksa_a
+ba_a = zeros(1,63);
+ksa_a  = zeros(1,63);
+for l_=1:63
+    wn_a = abs(sqrt(g/l_)); 
+    wpos_a = wn_a * 0.98; 
+    ba_a(l_) = -l_ + g/wpos_a^2;
+    ksa_a(l_) = 2 * 2.4 * wpos_a * (l_ + ba_a(l_));
+end
 % % Bode diagram
 % Ga = tf([ba_a, ksa_a, kisa_a],[1, ba_a/lh_0, ksa_a/lh_0, kisa_a/lh_0]);
 % %Gal = tf([1, 0],[1, ba_a/lh_0, ksa_a/lh_0, kisa_a/lh_0]);
@@ -227,7 +245,14 @@ kisa_a = ksa_a * wi_a;
 % setoptions(H,'FreqScale','linear')
 % grid on;
 % 
+
+
 % % Poles 
+%     wn_a = abs(sqrt(g/10)); 
+%     wpos_a = wn_a * 5; 
+%     ba_a(10) = -10 + g/wpos_a^2
+%     ksa_a(10) = 2 * .4 * wpos_a * (10 + ba_a(10))
+%     Ga = tf([ba_a(10), ksa_a(10)],[1, ksa_a(10)/(ba_a(10)+10), g/(ba_a(10)+10)]);
 % pGa = pole(Ga);
 % figure(6)
 % pzplot(Ga);
