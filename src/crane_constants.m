@@ -162,21 +162,21 @@ kisa_i = ksa_i * wi_i;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 y0 = 45; % Distancia del piso al carro yt0. Es constante
 ysb = 15;
-xt_0 = -10; sXMax=50; sXMin=-30;  % Puede ir de -30 a 50 mts
+xt_0 = -5; sXMax=50; sXMin=-30;  % Puede ir de -30 a 50 mts
             % Velocidad max +/- 4[m/s]
             % Acceleracion max +/- 1[m/s2]
-yl_0 = 10; sYMax=40; sYMin=-20; % Puede ir de -20 a 40 mts
+yl_0 = 5; sYMax=40; sYMin=-20; % Puede ir de -20 a 40 mts
             % Velocidad max +/- 1.5[m/s] carga nominal
             % Velocidad max +/- 3[m/s] sin carga 
 %Acceleracion max +/- 1[m/s2] cargado o sin carga
-xl_0 = -10;
+xl_0 = xt_0;
 
 lh_0 = sqrt((xl_0 - xt_0)^2 + (y0 - yl_0)^2) - 0.35;
 
 % Discretizo el espacio en x
 
 xdisc = [-25 -20 -15 -10 -5 -1 0 1 5 10 15 20 25 30 35 40 45];
-nCont = [ 1   1   1   1   1  0 0 0 2  3  4  5  6  7  8  9 10];
+nCont = [ 1   1   1   1   1  0 0 0 17  3  4  5  6  7  8  9 10];
 h = 2.5;
 w = 4;
 yc0 = h * nCont + [zeros(1, find(xdisc == 0)-1),15 , ...
@@ -186,9 +186,9 @@ yc0 = h * nCont + [zeros(1, find(xdisc == 0)-1),15 , ...
 %                               INTERFAZ                                       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%             
 bPosObjetivoIncremental = false; % Para check box 
-dXiniCarga = -10;
+dXiniCarga = -5;
 dXiniDescarga = 15;
-dYStart = 10;
+dYStart = 7;
 dYFinish = 15;
 dHmaxIzaje = 35;
 lh = 1;
