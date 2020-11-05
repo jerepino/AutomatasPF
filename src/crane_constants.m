@@ -176,7 +176,7 @@ lh_0 = sqrt((xl_0 - xt_0)^2 + (y0 - yl_0)^2) - 0.35;
 % Discretizo el espacio en x
 
 xdisc = [-25 -20 -15 -10 -5 -1 0 1 5 10 15 20 25 30 35 40 45];
-nCont = [ 1   1   1   1   1  0 0 0 17  3  4  5  6  7  8  9 10];
+nCont = [ 1   1   1   1   1  0 0 0 17  3  4  5  17  7  8  9 1];
 h = 2.5;
 w = 4;
 yc0 = h * nCont + [zeros(1, find(xdisc == 0)-1),15 , ...
@@ -187,9 +187,9 @@ yc0 = h * nCont + [zeros(1, find(xdisc == 0)-1),15 , ...
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%             
 bPosObjetivoIncremental = false; % Para check box 
 dXiniCarga = -5;
-dXiniDescarga = 15;
+dXiniDescarga = 45;
 dYStart = 7;
-dYFinish = 15;
+dYFinish = 0;
 dHmaxIzaje = 35;
 lh = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
