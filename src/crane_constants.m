@@ -46,6 +46,7 @@ M_ln = M_h + M_cn; %[kg] m l =65000 kg (15000 kg + 50000 kg)
 %Gancho con carga minima
 M_lmin = M_h + M_cmin; %[kg] m l =17000 kg (15000 kg + 2000 kg)
 %Intermedia (contenedor cargado con carga menor que nominal)
+Mt   = Mc + (Jw+Jm_c*i_c^2) / (Rw^2); %[kg] masa equivalente
 
 % Gravedad
 g = 9.80665; % [m/s2]
@@ -189,7 +190,9 @@ bPosObjetivoIncremental = false; % Para check box
 dXiniCarga = -10;
 dXiniDescarga = 15;
 dYStart = 10;
+dYStartAuto = dYStart + 1;
 dYFinish = 15;
+dYFinish_Auto = dYFinish - 1;
 dHmaxIzaje = 35;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -203,19 +206,23 @@ Ba = [-1/lh_0; 0];
 p_a = eig(Aa); 
 % syms s;
 % pas = simplify(det(s * eye(2) - Aa));
-
 % Sintonia Serie PID Angulo de carga
-wn_a = abs(sqrt(g/lh_0)); 
-n_a = 2.4;
-wpos_a = wn_a * 0.9;         % En el paper dice que wpos < wn_a 
-wv_a = n_a * wpos_a;
-wi_a = wpos_a / n_a;
-ba_a =  lh_0 * wv_a;
-ksa_a = ba_a * wpos_a;
-% ba_a = lh_0 * (n_a - 1) * wpos_a;
-% ksa_a = lh_0 * wpos_a^2;
-
-kisa_a = ksa_a * wi_a;
+ba_a = zeros(1,60); ksa_a  = zeros(1,60); Ksia_b = zeros(1,60);
+for lh=1:1:60
+    G = tf([-(Mc+M_l0) 0],[(Mt+M_l0)*lh 0 Mt])
+    %G = tf([-(mc+mlMax) 0],[(Mt+mlMax)*lh 0 Mt]); %EMMA
+    polos = roots(G.den{1});
+    wn_a = abs(polos(1)); 
+    n_a = 3;
+    wpos_a = wn_a*0.9;
+    wv_a = n_a * wpos_a;
+    wi_a = wpos_a / n_a;
+    ba_a(lh) =  Jeq_c*i_c^2/Rw^2 * wv_a;
+    ksa_a(lh) = ba_a(lh) * wpos_a;
+    % ba_a = lh_0 * (n_a - 1) * wpos_a;
+    % ksa_a = lh_0 * wpos_a^2;
+    Ksia_b(lh) = ksa_a(lh) * wi_a;
+end
 
 % % Bode diagram
 % Ga = tf([ba_a, ksa_a, kisa_a],[1, ba_a/lh_0, ksa_a/lh_0, kisa_a/lh_0]);
