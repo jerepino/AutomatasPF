@@ -46,6 +46,7 @@ M_ln = M_h + M_cn; %[kg] m l =65000 kg (15000 kg + 50000 kg)
 %Gancho con carga minima
 M_lmin = M_h + M_cmin; %[kg] m l =17000 kg (15000 kg + 2000 kg)
 %Intermedia (contenedor cargado con carga menor que nominal)
+Mt   = Mc + (Jw+Jm_c*i_c^2) / (Rw^2); %[kg] masa equivalente
 
 % Gravedad
 g = 9.80665; % [m/s2]
@@ -189,7 +190,9 @@ bPosObjetivoIncremental = false; % Para check box
 dXiniCarga = -5;
 dXiniDescarga = 45;
 dYStart = 7;
+dYStartAuto = dYStart + 1;
 dYFinish = 0;
+dYFinish_Auto = dYFinish - 1;
 dHmaxIzaje = 35;
 lh = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -203,8 +206,8 @@ Ba = [-1/lh_0; 0];
 p_a = eig(Aa); 
 % syms s;
 % pas = simplify(det(s * eye(2) - Aa));
-
 % Sintonia Serie PID Angulo de carga
+
 % Ga = tf([-(Mc+M_l0) 0],[lh_0*(M_l0+Jeq_c*i_c^2/Rw^2) 0 g*Jeq_c*i_c^2/Rw^2]);
 % p_a_ = pole(Ga);
 % wn_a = abs(sqrt(g/10)); 
@@ -224,7 +227,6 @@ p_a = eig(Aa);
 % %Estos funcan con ode4
 % ba_a = -10 + g/wpos_a^2
 % ksa_a = 2 * 0.6 * wpos_a * (10 + ba_a);
-
 
 % For para varias ba_a y ksa_a
 ba_a = zeros(1,63);
