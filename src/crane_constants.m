@@ -186,12 +186,18 @@ yc0 = h * nCont + [zeros(1, find(xdisc == 0)-1),15 , ...
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                               INTERFAZ                                       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%             
-bPosObjetivoIncremental = false; % Para check box 
+bPosObjetivoIncremental = false; % Para check box
+bControlAutomatico = true; % Check box
+bCargaDescarga = false; % Check box
 dXiniCarga = -5;
 dXiniDescarga = 45;
+dXiniCarga2 = 40;
+dXiniDescarga2 = -10;
 dYStart = 7;
+dYStart2 = 0;
 dYStartAuto = dYStart + 1;
 dYFinish = 0;
+dYFinish2 = 7;
 dYFinish_Auto = dYFinish - 1;
 dHmaxIzaje = 35;
 lh = 1;
