@@ -82,8 +82,8 @@ p = eig(Ac);
 
 % Sintonia Serie PID Carro
 wn_c = abs(p(2));
-n_c = 2.8;
-wpos_c = wn_c * 12;
+n_c = 3;
+wpos_c = wn_c * 13;
 wv_c = n_c * wpos_c;
 wi_c = wpos_c / n_c;
 ba_c = Jeq_c * wv_c;
@@ -115,7 +115,7 @@ kisa_c = ksa_c * wi_c;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Torque maximo izaje
 amax_i = 1; %[m/s^2]
-vmax_i = 1.5; %[m/s]
+vmax_i = 3; %[m/s]
 Tmax_st = g * M_ln * Rd / i_i;
 Fw_max = Kw * 0.4 + Bw * 2; % Planteo un estiramiento y velocidad maximo 
                             % en base a los resultados de una ejecucion 
@@ -165,21 +165,26 @@ kisa_i = ksa_i * wi_i;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 y0 = 45; % Distancia del piso al carro yt0. Es constante
 ysb = 15;
-xt_0 = -5; sXMax=50; sXMin=-30;  % Puede ir de -30 a 50 mts
+xt_0 = -25; 
+sXMax=50; 
+sXMin=-30;  % Puede ir de -30 a 50 mts
             % Velocidad max +/- 4[m/s]
             % Acceleracion max +/- 1[m/s2]
-yl_0 = 5; sYMax=40; sYMin=-20; % Puede ir de -20 a 40 mts
+xl_0 = xt_0;
+yl_0 = 0;
+sYMax=40; 
+sYMin=-20; % Puede ir de -20 a 40 mts
             % Velocidad max +/- 1.5[m/s] carga nominal
             % Velocidad max +/- 3[m/s] sin carga 
 %Acceleracion max +/- 1[m/s2] cargado o sin carga
-xl_0 = xt_0;
 
-lh_0 = sqrt((xl_0 - xt_0)^2 + (y0 - yl_0)^2) - 0.35;
+
+lh_0 = sqrt((xl_0 - xt_0)^2 + (y0 - yl_0)^2);% - 0.35;
 
 % Discretizo el espacio en x
 
 xdisc = [-25 -20 -15 -10 -5 -1 0 1 5 10 15 20 25 30 35 40 45];
-nCont = [ 1   1   1   1   1  0 0 0 17  3  4  5  17  7  8  9 1];
+nCont = [ 0   1   0   1   1  0 0 0 17  3  4  5  17  7  8  9 1];
 h = 2.5;
 w = 4;
 yc0 = h * nCont + [zeros(1, find(xdisc == 0)-1),15 , ...
@@ -189,6 +194,7 @@ yc0 = h * nCont + [zeros(1, find(xdisc == 0)-1),15 , ...
 %                               INTERFAZ                                       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%             
 bPosObjetivoIncremental = false; % Para check box
+dIncremento = 0;
 bControlAutomatico = true; % Check box
 bCargaDescarga = false; % Check box
 dXiniCarga = -5;
@@ -201,17 +207,18 @@ dYStartAuto = dYStart + 1;
 dYFinish = 0;
 dYFinish2 = 7;
 dYFinish_Auto = dYFinish - 1;
-dHmaxIzaje = 35;
-lh = 1;
+dHmaxIzaje = 40;
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                               BALANCEO                                       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% lh = 1;
 % Polos Sistema Balanceo carga
-Aa = [0 -g/lh_0; 1 0];
-Ba = [-1/lh_0; 0];
+% Aa = [0 -g/lh_0; 1 0];
+% Ba = [-1/lh_0; 0];
 % Wc_a = ctrb(Aa, Ba);
 % rank(Wc_a);
-p_a = eig(Aa); 
+% p_a = eig(Aa); 
 % syms s;
 % pas = simplify(det(s * eye(2) - Aa));
 % Sintonia Serie PID Angulo de carga
@@ -237,37 +244,45 @@ p_a = eig(Aa);
 % ksa_a = 2 * 0.6 * wpos_a * (10 + ba_a);
 
 % For para varias ba_a y ksa_a
-ba_a = zeros(1,63);
-ksa_a  = zeros(1,63);
-for l_=1:63
-    wn_a = abs(sqrt(g/l_)); 
-    wpos_a = wn_a * 0.98; 
-    ba_a(l_) = -l_ + g/wpos_a^2;
-    ksa_a(l_) = 2 * 2.4 * wpos_a * (l_ + ba_a(l_));
-end
-% % Bode diagram
-% Ga = tf([ba_a, ksa_a, kisa_a],[1, ba_a/lh_0, ksa_a/lh_0, kisa_a/lh_0]);
-% %Gal = tf([1, 0],[1, ba_a/lh_0, ksa_a/lh_0, kisa_a/lh_0]);
+% ba_a = zeros(1,63);
+% ksa_a  = zeros(1,63);
+% for l_=1:63
+%     wn_a = abs(sqrt(g/l_)); 
+%     wpos_a = wn_a * 0.98; 
+%     ba_a(l_) = -l_ + g/wpos_a^2;
+%     ksa_a(l_) = 2 * 0.7 * wpos_a * (l_ + ba_a(l_));
+% end
+
+%%% Nueva sintonizacion y sus polos.
+% lh = 40;
+% ml = M_cn;
+% wpos = 10 * abs(sqrt((g*Mt)/(lh*(ml+Mt))));
+% zita = 1.5;
+% ba = lh - (g*Mt) / (wpos^2 * (ml+ Mt));
+% ksa = 2 * wpos * zita* (lh - ba);
+% Ga = tf([ba/(-ba+lh), ksa/(-ba+lh)],[1, ksa/(-ba+lh), (g*Mt)/((-ba+lh)*(ml+Mt))]);
+% 
+% % % Bode diagram
+% % Ga = tf([ba_a, ksa_a, kisa_a],[1, ba_a/lh_0, ksa_a/lh_0, kisa_a/lh_0]);
+% % %Gal = tf([1, 0],[1, ba_a/lh_0, ksa_a/lh_0, kisa_a/lh_0]);
 % figure(5)
 % % bode(Ga,{wi_a, wv_a});
 % H = bodeplot(Ga);%,{wpos_a/n_a, wpos_a*n_a});
 % title('Bode Agulo');
 % setoptions(H,'FreqScale','linear')
 % grid on;
-% 
-
-
-% % Poles 
-%     wn_a = abs(sqrt(g/10)); 
-%     wpos_a = wn_a * 5; 
-%     ba_a(10) = -10 + g/wpos_a^2
-%     ksa_a(10) = 2 * .4 * wpos_a * (10 + ba_a(10))
-%     Ga = tf([ba_a(10), ksa_a(10)],[1, ksa_a(10)/(ba_a(10)+10), g/(ba_a(10)+10)]);
+% % 
+% % % Poles 
+% %     wn_a = abs(sqrt(g/10)); 
+% %     wpos_a = wn_a * 5; 
+% %     ba_a(10) = -10 + g/wpos_a^2
+% %     ksa_a(10) = 2 * .4 * wpos_a * (10 + ba_a(10))
+% %     Ga = tf([ba_a(10)/(ba_a(10)+10), ksa_a(10)/(ba_a(10)+10)],[1, ksa_a(10)/(ba_a(10)+10), g/(ba_a(10)+10)]);
 % pGa = pole(Ga);
 % figure(6)
 % pzplot(Ga);
 % title('Polos Angulo');
 % hold on;
 % grid on;
-% pzplot(tf([-1/lh_0, 0, 0],[1, 0, 1.0162]),'r');
+% pzplot(tf([-(ml+Mt), 0],[lh * (ml+Mt), 0, g*Mt]),'r');
 % legend('controler','angle');
