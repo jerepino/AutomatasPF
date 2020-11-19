@@ -207,8 +207,6 @@ dYStartAuto = dYStart + 1;
 dYFinish = 0;
 dYFinish2 = 7;
 dYFinish_Auto = dYFinish - 1;
-dHmaxIzaje = 40;
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                               BALANCEO                                       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -254,14 +252,19 @@ dHmaxIzaje = 40;
 % end
 
 %%% Nueva sintonizacion y sus polos.
-% lh = 40;
+% lh = 20;
 % ml = M_cn;
-% wpos = 10 * abs(sqrt((g*Mt)/(lh*(ml+Mt))));
-% zita = 1.5;
-% ba = lh - (g*Mt) / (wpos^2 * (ml+ Mt));
-% ksa = 2 * wpos * zita* (lh - ba);
-% Ga = tf([ba/(-ba+lh), ksa/(-ba+lh)],[1, ksa/(-ba+lh), (g*Mt)/((-ba+lh)*(ml+Mt))]);
 % 
+% wpos =2* abs(sqrt((g*Mt)/(lh*(ml+Mt))));
+% zita = 1;
+% lq = (ml+Mt)*lh;
+% ba = 3 * wpos * lq;
+% ksa = wpos^2 * lq *3;%- g * Mt;
+% pid = tf([ba, ksa],1);
+% Ga = tf([-(ml+Mt),0],[lh*(ml+Mt), 0, (g*Mt)]);
+% Gas = pid * Ga / (1 + Ga * pid) 
+% step(feedback(Ga,pid))
+% step(Gas);
 % % % Bode diagram
 % % Ga = tf([ba_a, ksa_a, kisa_a],[1, ba_a/lh_0, ksa_a/lh_0, kisa_a/lh_0]);
 % % %Gal = tf([1, 0],[1, ba_a/lh_0, ksa_a/lh_0, kisa_a/lh_0]);
