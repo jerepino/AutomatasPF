@@ -172,7 +172,7 @@ function DoPostPropSetup(block)
   % dimensions have to be updated at output
   block.SignalSizesComputeType = 'FromInputValueAndSize';
   
-  block.NumDworks = 9;
+  block.NumDworks = 12;
 
   block.Dwork(1).Name            = 'xt';
   block.Dwork(1).Dimensions      = 1;
@@ -227,6 +227,23 @@ function DoPostPropSetup(block)
   block.Dwork(9).DatatypeID      = 0;      % double
   block.Dwork(9).Complexity      = 'Real'; % real
 
+  
+  block.Dwork(10).Name            = 'xl_vect';
+  block.Dwork(10).Dimensions      = 100000;
+  block.Dwork(10).DatatypeID      = 0;      % double
+  block.Dwork(10).Complexity      = 'Real'; % real
+%   block.Dwork(10).UsedAsDiscState = true;
+  
+  block.Dwork(11).Name            = 'yl_vect';
+  block.Dwork(11).Dimensions      = 100000;
+  block.Dwork(11).DatatypeID      = 0;      % double
+  block.Dwork(11).Complexity      = 'Real'; % real
+  
+  block.Dwork(12).Name            = 'ind';
+  block.Dwork(12).Dimensions      = 1;
+  block.Dwork(12).DatatypeID      = 0;      % double
+  block.Dwork(12).Complexity      = 'Real'; % real
+%   block.Dwork(11).UsedAsDiscState = true;
 %end DoPostPropSetup
 
 %%
@@ -262,9 +279,15 @@ function Start(block)
     block.Dwork(7).Data = block.DialogPrm(6).Data; %nCont
     block.Dwork(8).Data = false; % bFlagLoad
     block.Dwork(9).Data = 0; % indice del container
+    block.Dwork(10).Data = zeros(100000,1);
+    block.Dwork(11).Data = zeros(100000,1);
+    block.Dwork(12).Data = 1; % indice
     %Acces to param data
     x0 = block.DialogPrm(1).Data;
     y0 = block.DialogPrm(2).Data;
+        
+    block.Dwork(10).Data(block.Dwork(12).Data) = x0; %xl0
+    block.Dwork(11).Data(block.Dwork(12).Data) = y0; %yl0
     
     localFigInit(x0, y0, block);
 %end Start
@@ -301,12 +324,15 @@ block.Dwork(3).Data = block.InputPort(3).Data;
 block.Dwork(4).Data = block.InputPort(4).Data;
 block.Dwork(5).Data = block.InputPort(5).Data;
 block.Dwork(6).Data = block.InputPort(6).Data;
-
+block.Dwork(12).Data = block.Dwork(12).Data+1;
+block.Dwork(10).Data(block.Dwork(12).Data) = block.Dwork(2).Data;
+block.Dwork(11).Data(block.Dwork(12).Data) = block.Dwork(3).Data;
 fig = get_param(gcbh,'UserData');
 if ishghandle(fig, 'figure')
     if strcmp(get(fig,'Visible'),'on')
         ud = get(fig,'UserData');
-        localFigSets(ud,block);
+        localFigSets(ud,block,block.Dwork(10).Data(1:block.Dwork(12).Data)...
+            ,block.Dwork(11).Data(1:block.Dwork(12).Data));
     end
 end
 %end Update
@@ -429,6 +455,11 @@ if ishghandle(Fig ,'figure')
     %
     % bring it to the front
     %
+    % Trail line for view the trajectory
+    set(FigUD.Trail,...
+    'XData',    block.Dwork(2).Data,...
+    'YData',     block.Dwork(3).Data);
+
     figure(Fig);
     return
 end
@@ -532,6 +563,13 @@ Spre = surface(...
     'ZData',    zeros(2),...
     'CData',    11*ones(2));
 
+% Trail line for view the trajectory
+Trail = line(...
+    'Parent',   AxesH,...
+    'Color', 'r',...
+    'LineWidth',1 ,...
+    'XData',    block.Dwork(2).Data,...
+    'YData',     block.Dwork(3).Data);
 
 %
 % all the HG objects are created, store them into the Figure's UserData
@@ -544,6 +582,7 @@ FigUD.Ship         = Ship;
 FigUD.Beam         = Beam;
 FigUD.Cont         = Cont;
 FigUD.Spre         = Spre;
+FigUD.Trail        = Trail;
 FigUD.Block        = get_param(gcbh,'Handle');
 FigUD.Text         = Text;
 % set( Object, Name parameter, Value)
@@ -565,7 +604,7 @@ set_param(gcbh,'UserData',Fig);
 % inverted pendulum animation window.
 %=============================================================================
 %
-function localFigSets(ud,block)
+function localFigSets(ud,block,xl_,yl_)
 % Containers
 h = block.DialogPrm(3).Data;   %height
 w = block.DialogPrm(4).Data;   %width
@@ -593,6 +632,15 @@ set(ud.Spre,...
     'YData',    [block.Dwork(3).Data+1 block.Dwork(3).Data+1;...
                  block.Dwork(3).Data block.Dwork(3).Data]);
 
+% Angle debug
+% alpha = atan2(3,4);
+% set(ud.Trail,...
+%     'XData',  [block.Dwork(2).Data,(block.Dwork(2).Data)-30*cos(alpha)]  ,...
+%     'YData', [block.Dwork(3).Data,(block.Dwork(3).Data)+30*sin(alpha)]  ); 
+% Trail
+set(ud.Trail,...
+    'XData',  xl_'  ,...
+    'YData', yl_'  );     
 if block.InputPort(7).Data    
     if ~block.Dwork(8).Data
         xRounded = interp1(xDisc, xDisc, block.Dwork(2).Data, 'nearest', 'extrap');
