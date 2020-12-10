@@ -132,8 +132,8 @@ p_i = eig(Ai);
 
 % Sintonia Serie PID Izaje
 wn_i = abs(p_i(2));
-n_i = 3.3;
-wpos_i = wn_i * 4.5;
+n_i = 3;
+wpos_i = wn_i * 10;
 wv_i = n_i * wpos_i;
 wi_i = wpos_i / n_i;
 ba_i = Jeq_i * wv_i;
